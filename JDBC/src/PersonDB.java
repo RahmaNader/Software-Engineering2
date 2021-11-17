@@ -31,7 +31,6 @@ public class PersonDB {
             } else System.out.println(e.getMessage());
         }
     }
-
     public void register() {
         Connection connection = null;
         Statement stmt = null;
