@@ -1,5 +1,4 @@
 import java.sql.*;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
 import java.util.Vector;
@@ -67,7 +66,6 @@ public class RideDB {
                     + "'" + "," + "'" + ride.getPrice ()
                     + "'" + "," + "'" + ride.getUser ( ).getUserName ( )
                     + "'" + "," + "'" +  ride.getDriver ().getUserName ()
-                    + "'" + "," + "'" +  ride.getRideState ()
                     + "'" + ");";
             stmt.executeUpdate(sql);
             if (!rides.contains(ride)) {

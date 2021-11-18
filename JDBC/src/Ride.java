@@ -4,7 +4,7 @@ public class Ride {
     private String dest;
     private double price;
     private User user;
-    private CarDriver driver;
+    private Driver driver;
     private RideState rideState;
 
     Ride (){}
@@ -58,11 +58,11 @@ public class Ride {
         this.user = user;
     }
 
-    public CarDriver getDriver ( ) {
+    public Driver getDriver ( ) {
         return driver;
     }
 
-    public void setDriver ( CarDriver driver ) {
+    public void setDriver ( Driver driver ) {
         if(driver != null) {
             rideState = RideState.Accepted;
             this.driver = driver;
