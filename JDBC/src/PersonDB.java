@@ -19,7 +19,8 @@ public class PersonDB {
                     "(USERNAME CHAR(20) PRIMARY KEY     NOT NULL," +
                     " NAME           TEXT    NOT NULL, " +
                     " MOBILE            CHAR(20)     NOT NULL, " +
-                    " PASSWORD        CHAR(30))      NOT NULL";
+                    "status      TEXT CHECK( status IN ('S','P','A') )   NOT NULL DEFAULT 'P', "+
+                    " PASSWORD        CHAR(30)      NOT NULL)";
             stmt.executeUpdate(sql);
             connection.setAutoCommit(false);
             System.out.println("Opened database successfully");
@@ -32,17 +33,21 @@ public class PersonDB {
         }
     }
     public void register() {
+        Scanner input = new Scanner(System.in); String in;
         Connection connection = null;
         Statement stmt = null;
+        boolean driver = false;
         try {
+            System.out.println("Do you want to register as a driver?[Y/N]");
+            in = input.nextLine();
+            if(in.equals("Y")) driver = true;
+            else driver = true;
             Class.forName("PersonDB");
             connection = DriverManager.getConnection("jdbc:sqlite:person.db");
             connection.setAutoCommit(false);
             System.out.println("Opened database successfully");
             stmt = connection.createStatement();
             Person person = new Person();
-            Scanner input = new Scanner(System.in);
-            String in;
             System.out.print("User name: ");
             in = input.nextLine();
             person.setUserName(in);
@@ -55,6 +60,14 @@ public class PersonDB {
             System.out.print("\n" + "Password: ");
             in = input.nextLine();
             person.setPassword(in);
+            if(driver){
+                System.out.print("\n" + "National ID: ");
+                in = input.nextLine();
+                person.setMobileNum(in);
+                System.out.print("\n" + "Driver License: ");
+                in = input.nextLine();
+                person.setPassword(in);
+            }
             String sql = "INSERT INTO PERSON (USERNAME,NAME,MOBILE,PASSWORD) " +
                     "VALUES (" + "'" + person.getUserName() + "'" + "," + "'" + person.getName() + "'" + "," + "'" + person.getMobileNum() + "'" + "," + "'" + person.getPassword() + "'" + ");";
             stmt.executeUpdate(sql);
@@ -86,6 +99,7 @@ public class PersonDB {
                 String name = rs.getString("name");
                 String mobile = rs.getString("mobile");
                 String password = rs.getString("password");
+                String staus = rs.getString("status");
                 System.out.println("USER NAME = " + username);
                 System.out.println("NAME = " + name);
                 System.out.println("MOBILE = " + mobile);
