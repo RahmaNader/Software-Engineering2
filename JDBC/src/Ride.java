@@ -8,14 +8,18 @@ public class Ride {
     private RideState rideState;
 
     Ride (){}
-    Ride (String src, String dest, double price, User user, CarDriver driver )
+    Ride (String src, String dest, double price, String user, String driver )
     {
-        this.src = src;
-        this.dest = dest;
-        this.price = price;
-        this.user = user;
-        this.driver = driver;
-        rideState = RideState.Pending;
+        if(user != null ) {
+            this.src = src;
+            this.dest = dest;
+            this.price = price;
+            this.user.setUserName ( user );
+            this.driver.setUserName ( driver );
+            rideState = RideState.Pending;
+        }
+        else
+            System.out.println ("Invalid user! please register on system first! " );
     }
 
     public RideState getRideState ( ) {

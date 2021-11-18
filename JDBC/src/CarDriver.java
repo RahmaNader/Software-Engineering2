@@ -1,2 +1,2 @@
-public class CarDriver {
+public class CarDriver extends Person{
 }
