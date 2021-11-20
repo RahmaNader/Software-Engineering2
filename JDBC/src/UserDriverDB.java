@@ -3,20 +3,29 @@ import java.util.EmptyStackException;
 import java.util.Scanner;
 import java.util.Vector;
 
+
 public class UserDriverDB {
     private final Vector<User> users;
-
     private final Vector<Driver> drivers;
+    private static Connection connection;
+    private static Statement stmt;
+    private Scanner input = new Scanner(System.in);
 
-    public UserDriverDB() {
-        users = new Vector<>();
-        drivers = new Vector<>();
-        Connection connection;
-        Statement stmt;
-        try {
+    private static void setupDbConnection(){
+        try{
             Class.forName("UserDriverDB");
             connection = DriverManager.getConnection("jdbc:sqlite:persons.db");
             stmt = connection.createStatement();
+        }catch (Exception e){
+            e.printStackTrace();
+        }
+    }
+
+    public UserDriverDB() {
+        setupDbConnection();
+        users = new Vector<>();
+        drivers = new Vector<>();
+        try {
             String sql = "CREATE TABLE IF NOT EXISTS USER " +
                     "(USERNAME CHAR(50) PRIMARY KEY     NOT NULL," +
                     " NAME           TEXT    NOT NULL, " +
@@ -29,32 +38,22 @@ public class UserDriverDB {
                     "(USERNAME CHAR(50) PRIMARY KEY     NOT NULL," +
                     " NAME           TEXT    NOT NULL, " +
                     " MOBILE            CHAR(20)     NOT NULL, " +
-                    " STATUS      TEXT CHECK( STATUS IN ('S','P','A') )   NOT NULL DEFAULT 'A', " +
+                    " STATUS      TEXT CHECK( STATUS IN ('S','P','A') )   NOT NULL DEFAULT 'P', " +
                     " EMAIL      CHAR(30) DEFAULT 'null@gmail.com' ," +
                     " NATIONALID      CHAR(30) NOT NULL ," +
                     " LICENSE      CHAR(30) NOT NULL ," +
                     " PASSWORD        CHAR(30)     NOT NULL)";
             stmt.executeUpdate(sql);
-            connection.setAutoCommit(false);
             System.out.println("Opened persons successfully");
-            stmt.close();
-            connection.close();
         } catch (Exception e) {
-            System.out.println(e.getMessage());
+            e.printStackTrace();
         }
     }
 
     public void registerUser() {
-        Scanner input = new Scanner(System.in);
         String in;
-        Connection connection;
-        Statement stmt;
         try {
-            Class.forName("UserDriverDB");
-            connection = DriverManager.getConnection("jdbc:sqlite:persons.db");
-            connection.setAutoCommit(false);
             System.out.println("Opened persons successfully");
-            stmt = connection.createStatement();
             User user = new User();
             String sql;
             System.out.println("User name: ");
@@ -77,30 +76,19 @@ public class UserDriverDB {
             if (!users.contains(user)) {
                 users.add(user);
                 stmt.executeUpdate(sql);
-            }
-            else {
+            } else {
                 System.out.println("User name already exists");
             }
-            stmt.close();
-            connection.commit();
-            connection.close();
-        } catch (EmptyStackException | SQLException | ClassNotFoundException e) {
-            //System.err.println(e.getClass().getName() + ": " + e.getMessage());
+        } catch (EmptyStackException  | SQLException e) {
+            e.printStackTrace();
         }
         System.out.println("User created successfully");
     }
 
     public void registerDriver() {
-        Scanner input = new Scanner(System.in);
         String in;
-        Connection connection;
-        Statement stmt;
         try {
-            Class.forName("UserDriverDB");
-            connection = DriverManager.getConnection("jdbc:sqlite:persons.db");
-            connection.setAutoCommit(false);
             System.out.println("Opened persons successfully");
-            stmt = connection.createStatement();
             Driver driver = new Driver();
             String sql;
             System.out.println("User name: ");
@@ -129,21 +117,16 @@ public class UserDriverDB {
             if (!drivers.contains(driver)) {
                 drivers.add(driver);
                 stmt.executeUpdate(sql);
-            }
-            else {
+            } else {
                 System.out.println("User name already exists");
             }
-            stmt.close();
-            connection.commit();
-            connection.close();
-        } catch (EmptyStackException | SQLException | ClassNotFoundException e) {
-            //System.err.println(e.getClass().getName() + ": " + e.getMessage());
+        } catch (EmptyStackException | SQLException e) {
+            e.printStackTrace();
         }
         System.out.println("Driver created successfully");
     }
 
     public void register() {
-        Scanner input = new Scanner(System.in);
         String in;
         System.out.println("Do you want to register as a driver?[Y/N]");
         in = input.nextLine();
@@ -152,14 +135,8 @@ public class UserDriverDB {
     }
 
     public void loadUserDB() {
-        Connection connection;
-        Statement stmt;
         try {
-            Class.forName("UserDriverDB");
-            connection = DriverManager.getConnection("jdbc:sqlite:persons.db");
-            connection.setAutoCommit(false);
             System.out.println("Opened persons successfully");
-            stmt = connection.createStatement();
             ResultSet rs = stmt.executeQuery("SELECT * FROM USER;");
             while (rs.next()) {
                 System.out.println();
@@ -178,23 +155,15 @@ public class UserDriverDB {
                 System.out.println("///////////////////////////////");
             }
             rs.close();
-            stmt.close();
-            connection.close();
         } catch (Exception e) {
-            System.err.println(e.getClass().getName() + ": " + e.getMessage());
+            e.printStackTrace();
         }
         System.out.println("Operation done successfully");
     }
 
     public void loadDriverDB() {
-        Connection connection;
-        Statement stmt;
         try {
-            Class.forName("UserDriverDB");
-            connection = DriverManager.getConnection("jdbc:sqlite:persons.db");
-            connection.setAutoCommit(false);
             System.out.println("Opened persons successfully");
-            stmt = connection.createStatement();
             ResultSet rs = stmt.executeQuery("SELECT * FROM DRIVER;");
             while (rs.next()) {
                 System.out.println();
@@ -218,17 +187,14 @@ public class UserDriverDB {
                 System.out.println("///////////////////////////////");
             }
             rs.close();
-            stmt.close();
-            connection.close();
         } catch (Exception e) {
-            System.err.println(e.getClass().getName() + ": " + e.getMessage());
+            e.printStackTrace();
         }
         System.out.println("Operation done successfully");
     }
 
     public Person login() {
         Person p = null;
-        Scanner input = new Scanner(System.in);
         String username, password;
         System.out.println("User name: ");
         username = input.nextLine();
@@ -255,7 +221,7 @@ public class UserDriverDB {
             }
             System.out.println("Wrong username or password");
         } catch (NullPointerException e) {
-            System.out.println(e.getMessage());
+            e.printStackTrace();
         }
         return null;
     }
