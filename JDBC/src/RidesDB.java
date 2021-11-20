@@ -7,12 +7,26 @@ import java.util.Vector;
 
 public class RidesDB {
     private final Vector<Rides> rides;
+    private static Statement stmt;
+    private static Connection connection;
+    private static RidesDB uniqueInstance;
     Scanner input = new Scanner(System.in);
+    String in;
 
-    public RidesDB() {
+    private static void setupDbConnection(){
+        try{
+            Class.forName("UserDriverDB");
+            connection = DriverManager.getConnection("jdbc:sqlite:persons.db");
+            stmt = connection.createStatement();
+        }catch (Exception e){
+            e.printStackTrace();
+        }
+    }
+
+
+    private RidesDB() {
         rides = new Vector<>();
-        Connection connection;
-        Statement stmt;
+        setupDbConnection();
         try {
             Class.forName("RidesDB");
             connection = DriverManager.getConnection("jdbc:sqlite:rides.db");
@@ -28,16 +42,20 @@ public class RidesDB {
             stmt.executeUpdate(sql);
             connection.setAutoCommit(false);
             System.out.println("Opened Rides successfully");
-            stmt.close();
-            connection.close();
         } catch (Exception e) {
             System.out.println(e.getMessage());
         }
     }
 
+    public static RidesDB getInstance(){
+        if(uniqueInstance == null){
+            uniqueInstance = new RidesDB();
+        }
+        return uniqueInstance;
+    }
+
     public void loadDB() {
-        Connection connection;
-        Statement stmt;
+        setupDbConnection();
         try {
             Class.forName("RidesDB");
             connection = DriverManager.getConnection("jdbc:sqlite:rides.db");
@@ -61,17 +79,13 @@ public class RidesDB {
                 }
             }
             rs.close();
-            stmt.close();
-            connection.close();
         } catch (Exception e) {
             System.err.println(e.getClass().getName() + ": " + e.getMessage());
         }
     }
 
     public void requestRide(Person p) {
-        String in;
-        Connection connection;
-        Statement stmt;
+        setupDbConnection();
         try {
             Class.forName("RidesDB");
             connection = DriverManager.getConnection("jdbc:sqlite:rides.db");
@@ -92,9 +106,7 @@ public class RidesDB {
                 rides.add(ride);
                 stmt.executeUpdate(sql);
             }
-            stmt.close();
             connection.commit();
-            connection.close();
         } catch (Exception e) {
             System.err.println(e.getClass().getName() + ": " + e.getMessage());
         }
@@ -102,8 +114,7 @@ public class RidesDB {
     }
 
     public void viewRequests(Person p){
-        Connection connection;
-        Statement stmt;
+        setupDbConnection();
         int in;
         try {
             Class.forName("RidesDB");
@@ -127,8 +138,6 @@ public class RidesDB {
                 }
             }
             rs.close();
-            stmt.close();
-            connection.close();
         } catch (Exception e) {
             System.err.println(e.getClass().getName() + ": " + e.getMessage());
         }
@@ -141,8 +150,6 @@ public class RidesDB {
     public void acceptRequest(Person P){
         System.out.println("Please enter request id");
         int in = input.nextInt();
-        Connection connection;
-        Statement stmt;
         try {
             Class.forName("RidesDB");
             connection = DriverManager.getConnection("jdbc:sqlite:rides.db");
@@ -163,8 +170,6 @@ public class RidesDB {
             stmt.executeUpdate(sql);
             connection.commit();
             rs.close();
-            stmt.close();
-            connection.close();
         } catch (Exception e) {
             System.err.println(e.getClass().getName() + ": " + e.getMessage());
         }
