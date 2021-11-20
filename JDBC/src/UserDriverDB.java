@@ -9,6 +9,7 @@ public class UserDriverDB {
     private final Vector<Driver> drivers;
     private static Connection connection;
     private static Statement stmt;
+    private static UserDriverDB uniqueInstance;
     private Scanner input = new Scanner(System.in);
 
     private static void setupDbConnection(){
@@ -21,7 +22,7 @@ public class UserDriverDB {
         }
     }
 
-    public UserDriverDB() {
+    private UserDriverDB() {
         setupDbConnection();
         users = new Vector<>();
         drivers = new Vector<>();
@@ -48,6 +49,13 @@ public class UserDriverDB {
         } catch (Exception e) {
             e.printStackTrace();
         }
+    }
+
+    public static UserDriverDB getInstance(){
+        if(uniqueInstance == null){
+            uniqueInstance = new UserDriverDB();
+        }
+        return uniqueInstance;
     }
 
     public void registerUser() {

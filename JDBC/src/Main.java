@@ -100,7 +100,7 @@ public class Main {
     }
 
     public static void main(String[] args) {
-        UserDriverDB userDriverDB = new UserDriverDB();
+        UserDriverDB userDriverDB = UserDriverDB.getInstance();
         userDriverDB.loadUserDB();
         userDriverDB.loadDriverDB();
         Scanner input = new Scanner(System.in);
