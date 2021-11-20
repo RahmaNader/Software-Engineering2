@@ -1,6 +1,6 @@
 import java.util.Vector;
 
-public class Driver extends Person{
+public class Driver extends Person {
     private String driverLicense;
     private String nationalID;
     private float avgRating;
@@ -10,13 +10,15 @@ public class Driver extends Person{
         favouriteAreas = new Vector<>();
     }
 
-    public void addArea(String area){
+    public void addArea(String area) {
 
     }
-    public void listRides(){
+
+    public void listRides() {
 
     }
-    public void offerPrice(){
+
+    public void offerPrice() {
 
     }
 

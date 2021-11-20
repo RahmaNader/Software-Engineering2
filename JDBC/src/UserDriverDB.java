@@ -261,4 +261,6 @@ public class UserDriverDB {
     }
 
     public static void rateDriver(Person p){}
+
+    public void viewAvgRating(Person p){}
 }

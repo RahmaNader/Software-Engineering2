@@ -12,14 +12,18 @@ public class Person {
     private String mobileNum;
     private String email;
     private String password;
-    public Person(){}
-    public Person(String userName, String name, String mobileNum, String password){
-        this.userName=userName;
-        this.name=name;
-        this.mobileNum=mobileNum;
-        this.password=password;
+
+    public Person() {
     }
-    public void login(String userName, String password){
+
+    public Person(String userName, String name, String mobileNum, String password) {
+        this.userName = userName;
+        this.name = name;
+        this.mobileNum = mobileNum;
+        this.password = password;
+    }
+
+    public void login(String userName, String password) {
 
     }
 
