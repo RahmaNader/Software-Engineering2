@@ -9,6 +9,7 @@ public class Admin {
     private static Statement stmt;
 
     private Admin(){
+        //private admin constructor
     }
 
     private static void setupDbConnection(){
@@ -46,7 +47,7 @@ public class Admin {
                 System.out.println();
             }
             rs.close();
-         }catch (Exception e) {
+        }catch (Exception e) {
             e.printStackTrace();
         }
     }

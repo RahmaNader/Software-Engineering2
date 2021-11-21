@@ -6,10 +6,10 @@ import java.util.Scanner;
 import java.util.Vector;
 
 public class RidesDB {
-    private final Vector<Rides> rides;
     private static Statement stmt;
     private static Connection connection;
     private static RidesDB uniqueInstance;
+    private static final LocationDB locationDB = LocationDB.getInstance();
     Scanner input = new Scanner(System.in);
     String in;
 
@@ -23,9 +23,7 @@ public class RidesDB {
         }
     }
 
-
     private RidesDB() {
-        rides = new Vector<>();
         setupDbConnection();
         try {
             Class.forName("RidesDB");
@@ -72,11 +70,6 @@ public class RidesDB {
                 System.out.println("USER = " + rs.getString("user"));
                 System.out.println("STATUS = " + rs.getString("status"));
                 System.out.println("////////////////////");
-                Rides ride = new Rides(rs.getString("source"), rs.getString("destination"), rs.getString("user"),Integer.parseInt(rs.getString("id")));
-                //set status accordingly
-                if (!rides.contains(ride)) {
-                    rides.add(ride);
-                }
             }
             rs.close();
         } catch (Exception e) {
@@ -84,6 +77,7 @@ public class RidesDB {
         }
     }
 
+    //user method
     public void requestRide(Person p) {
         setupDbConnection();
         try {
@@ -102,10 +96,7 @@ public class RidesDB {
             ride.setUser(p.getUserName());
             String sql = "INSERT INTO RIDES (SOURCE,DESTINATION,USER) " +
                     "VALUES ("+ "'" + ride.getSource() + "'" + "," + "'" + ride.getDestination() + "'" + "," + "'" + ride.getUser() + "'" + ");";
-            if (!rides.contains(ride)) {
-                rides.add(ride);
-                stmt.executeUpdate(sql);
-            }
+            stmt.executeUpdate(sql);
             connection.commit();
         } catch (Exception e) {
             System.err.println(e.getClass().getName() + ": " + e.getMessage());
@@ -113,6 +104,7 @@ public class RidesDB {
         System.out.println("Records created successfully");
     }
 
+    //user method
     public void viewRequests(Person p){
         setupDbConnection();
         int in;
@@ -129,25 +121,22 @@ public class RidesDB {
                 System.out.println("SOURCE = " + rs.getString("source"));
                 System.out.println("DESTINATION = " + rs.getString("destination"));
                 System.out.println("DRIVER = " + rs.getString("driver"));
+                System.out.println("PRICE = " + rs.getString("price"));
                 System.out.println("STATUS = " + rs.getString("status"));
                 System.out.println("////////////////////");
-                Rides ride = new Rides(rs.getString("source"), rs.getString("destination"), rs.getString("user"),Integer.parseInt( rs.getString("id")));
-                //set status accordingly
-                if (!rides.contains(ride)) {
-                    rides.add(ride);
-                }
             }
             rs.close();
         } catch (Exception e) {
             System.err.println(e.getClass().getName() + ": " + e.getMessage());
         }
-        System.out.println("1- Accept offer?"+"\n"+"2- Deny offer?");
+        System.out.println("1- Accept offer?"+"\n"+"2- Deny offer?"+"\n"+"3- Go back");
         in = input.nextInt();
-        if(in == 1) this.acceptRequest(p);
+        if(in == 1) this.acceptRequest();
         else if(in == 2) this.refuseRequest(p);
     }
 
-    public void acceptRequest(Person P){
+    //user method
+    public void acceptRequest(){
         System.out.println("Please enter request id");
         int in = input.nextInt();
         try {
@@ -160,11 +149,6 @@ public class RidesDB {
             while (rs.next()) {
                 System.out.println();
                 System.out.println("ID = " + rs.getString("id"));
-                Rides ride = new Rides(rs.getString("source"), rs.getString("destination"), rs.getString("user"),Integer.parseInt(rs.getString("id")));
-                //set status accordingly
-                if (!rides.contains(ride)) {
-                    rides.add(ride);
-                }
             }
             String sql = "UPDATE RIDES set STATUS = 'A' WHERE ID ="+in+";";
             stmt.executeUpdate(sql);
@@ -175,14 +159,44 @@ public class RidesDB {
         }
     }
 
-    public void refuseRequest(Person P){}
+    //user method
+    public void refuseRequest(Person P){
 
-    public void makeOffer(Person p){}
+    }
 
-    public void displayFavourite(){
-        for(Rides ride: rides ){
-
+    //driver method
+    public void makeOffer(Person p){
+        System.out.println("Please enter ride id");
+        int in = input.nextInt();
+        try {
+            Class.forName("RidesDB");
+            connection = DriverManager.getConnection("jdbc:sqlite:rides.db");
+            connection.setAutoCommit(false);
+            System.out.println("Opened rides successfully");
+            ResultSet rs = stmt.executeQuery("SELECT * FROM RIDES WHERE ID = "+in+";");
+            while (rs.next()) {
+                System.out.println();
+                System.out.println("ID = " + rs.getString("id"));
+                System.out.println("SOURCE = "+rs.getString("source"));
+                System.out.println("DESTINATION = "+rs.getString("destination"));
+            }
+            stmt = connection.createStatement();
+            System.out.println("Enter a suitable price:");
+            in = input.nextInt();
+            String sql = "UPDATE RIDES set PRICE = "+in+" WHERE ID ="+in+";";
+            stmt.executeUpdate(sql);
+            sql = "UPDATE RIDES set DRIVER = '"+p.getUserName()+"' WHERE ID ="+in+";";
+            stmt.executeUpdate(sql);
+            connection.commit();
+            rs.close();
+        } catch (Exception e) {
+            System.err.println(e.getClass().getName() + ": " + e.getMessage());
         }
+    }
+
+    //driver method
+    public void displayFavorite(Person p){
+
     }
 }
 

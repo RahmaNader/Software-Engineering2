@@ -1,9 +1,13 @@
+import java.sql.SQLException;
 import java.util.Scanner;
 
 public class Main {
     private static Person logged;
-    private static Scanner input = new Scanner(System.in);
+    private static final Scanner input = new Scanner(System.in);
     private static Admin admin;
+    private static final LocationDB locationDB = LocationDB.getInstance();
+    private static final UserDriverDB userDriverDB = UserDriverDB.getInstance();
+    private static final RidesDB ridesDB = RidesDB.getInstance();
 
     public static void userPanel(){
         Scanner input = new Scanner(System.in);
@@ -12,7 +16,6 @@ public class Main {
             System.out.println("1- Request ride"+"\n"+"2- View requests"+"\n"+"3- Accept request"+
                     "\n"+"4- Refuse request"+"\n"+"5- Rate driver"+"\n"+"6- Exit");
             choice = input.nextInt();
-            RidesDB ridesDB = new RidesDB();
             if (choice == 1) {
                 ridesDB.requestRide(logged);
             }
@@ -20,34 +23,43 @@ public class Main {
                 ridesDB.viewRequests(logged);
             }
             else if (choice == 3) {
-                ridesDB.acceptRequest(logged);
+                ridesDB.acceptRequest();
             }
             else if (choice == 4) {
                 ridesDB.refuseRequest(logged);
             }
             else if (choice == 5) {
-                UserDriverDB.rateDriver(logged);
+                try {
+                    UserDriverDB.rateDriver(logged);
+                } catch (SQLException e) {
+                    e.printStackTrace();
+                }
             }
         }
     }
 
     public static void driverPanel() {
-        Scanner input = new Scanner(System.in);
         int choice = 0;
-        while (choice != 3) {
-            System.out.println("1- View rides"+"\n"+"2- Make offer"+"\n"+"3- Exit");
+        while (choice != 5) {
+            System.out.println("1- View rides"+"\n"+"2- Make offer"+"\n"+"3- Add favourite place"+
+                    "\n"+"4- View active requests in favourite places"+"\n"+"5- Exit");
             choice = input.nextInt();
-            RidesDB ridesDB = new RidesDB();
             if (choice == 1) {
                 ridesDB.loadDB();
             }
             if (choice == 2) {
-                ridesDB.loadDB();
+                ridesDB.makeOffer(logged);
+            }
+            if(choice == 3){
+                locationDB.addFavourite(logged);
+            }
+            if(choice == 4){
+                ridesDB.displayFavorite(logged);
             }
         }
     }
 
-    public static void adminPanal(){
+    public static void adminPanel(){
         int choice = 1;
         String userName;
         while(choice != 8) {
@@ -100,9 +112,6 @@ public class Main {
     }
 
     public static void main(String[] args) {
-        UserDriverDB userDriverDB = UserDriverDB.getInstance();
-        userDriverDB.loadUserDB();
-        userDriverDB.loadDriverDB();
         Scanner input = new Scanner(System.in);
         int choice;
         while (true) {
@@ -110,25 +119,32 @@ public class Main {
             choice = input.nextInt();
             if (choice == 1) {
                 userDriverDB.register();
-            } else if (choice == 2) {
+            }
+            else if (choice == 2) {
                 int choice2;
                 System.out.println("1- Login as User?"+"\n"+"2- Login as Driver?");
                 choice2 = input.nextInt();
                 if(choice2 == 3){
                     //admin code
                     admin = Admin.getInstance();
-                    adminPanal();
-                }else {
-                    logged = userDriverDB.login();
+                    adminPanel();
+                }
+                else if(choice2 == 1) {
+                    logged = userDriverDB.loginUser();
                     if (logged != null) {
-                        if (choice2 == 1) userPanel();
-                        else driverPanel();
+                        userPanel();
                     }
                 }
-            } else{
+                else if(choice2 == 2){
+                    logged = userDriverDB.loginDriver();
+                    if (logged != null) {
+                        driverPanel();
+                    }
+                }
+            }
+            else{
                 System.exit(0);
             }
         }
     }
-
 }

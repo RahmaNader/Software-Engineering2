@@ -1,16 +1,15 @@
-import java.sql.*;
-import java.util.EmptyStackException;
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.ResultSet;
+import java.sql.Statement;
 import java.util.Scanner;
-import java.util.Vector;
-
+import java.sql.SQLException;
 
 public class UserDriverDB {
-    private final Vector<User> users;
-    private final Vector<Driver> drivers;
     private static Connection connection;
     private static Statement stmt;
     private static UserDriverDB uniqueInstance;
-    private Scanner input = new Scanner(System.in);
+    private final Scanner input = new Scanner(System.in);
 
     private static void setupDbConnection(){
         try{
@@ -24,8 +23,6 @@ public class UserDriverDB {
 
     private UserDriverDB() {
         setupDbConnection();
-        users = new Vector<>();
-        drivers = new Vector<>();
         try {
             String sql = "CREATE TABLE IF NOT EXISTS USER " +
                     "(USERNAME CHAR(50) PRIMARY KEY     NOT NULL," +
@@ -33,7 +30,7 @@ public class UserDriverDB {
                     " MOBILE            CHAR(20)     NOT NULL, " +
                     " STATUS      TEXT CHECK( STATUS IN ('S','A') )   NOT NULL DEFAULT 'A', " +
                     " EMAIL      CHAR(30) DEFAULT 'null@gmail.com' ," +
-                    " PASSWORD        CHAR(30)     NOT NULL)";
+                    " PASSWORD        CHAR(30)     NOT NULL);";
             stmt.executeUpdate(sql);
             sql = "CREATE TABLE IF NOT EXISTS DRIVER " +
                     "(USERNAME CHAR(50) PRIMARY KEY     NOT NULL," +
@@ -43,14 +40,33 @@ public class UserDriverDB {
                     " EMAIL      CHAR(30) DEFAULT 'null@gmail.com' ," +
                     " NATIONALID      CHAR(30) NOT NULL ," +
                     " LICENSE      CHAR(30) NOT NULL ," +
-                    " PASSWORD        CHAR(30)     NOT NULL)";
+                    " PASSWORD        CHAR(30)     NOT NULL);";
             stmt.executeUpdate(sql);
             System.out.println("Opened persons successfully");
+            createRating();
         } catch (Exception e) {
             e.printStackTrace();
         }
     }
+/*
+import java.io.BufferedReader; import java.io.FileNotFoundException; import java.io.FileReader; import java.io.Reader; import java.sql.Connection; import java.sql.DriverManager; import java.sql.SQLException; import org.apache.ibatis.jdbc.ScriptRunner; public class RunningScripts { public static void main(String args[]) throws Exception { //Registering the Driver DriverManager.registerDriver(new com.mysql.jdbc.Driver()); //Getting the connection String mysqlUrl = "jdbc:mysql://localhost/talakai_noppi"; Connection con = DriverManager.getConnection(mysqlUrl, "root", "password"); System.out.println("Connection established......"); //Initialize the script runner ScriptRunner sr = new ScriptRunner(con); /
+ */
 
+
+    private void createRating() throws SQLException {
+        String sql;
+        sql = "CREATE TABLE IF NOT EXISTS RATING " +
+                "(ID        INTEGER    PRIMARY KEY      AUTOINCREMENT," +
+                "RATE DOUBLE NOT NULL DEFAULT 0," +
+                " USER    CHAR(50)  NOT NULL ," +
+                "    FOREIGN KEY (USER)" +
+                "       REFERENCES USER (USERNAME),"+
+                " DRIVER    CHAR(50)  NOT NULL ," +
+                "    FOREIGN KEY (DRIVER)" +
+                "       REFERENCES DRIVER (USERNAME) );";
+        //stmt.executeUpdate(sql);
+        long executeLargeUpdate = stmt.executeLargeUpdate(sql);
+    }
     public static UserDriverDB getInstance(){
         if(uniqueInstance == null){
             uniqueInstance = new UserDriverDB();
@@ -81,13 +97,8 @@ public class UserDriverDB {
                     "'" + user.getName() + "'" + "," +
                     "'" + user.getMobileNum() + "'" + "," +
                     "'" + user.getPassword() + "'" + ");";
-            if (!users.contains(user)) {
-                users.add(user);
-                stmt.executeUpdate(sql);
-            } else {
-                System.out.println("User name already exists");
-            }
-        } catch (EmptyStackException  | SQLException e) {
+            stmt.executeUpdate(sql);
+        } catch (SQLException e) {
             e.printStackTrace();
         }
         System.out.println("User created successfully");
@@ -122,86 +133,22 @@ public class UserDriverDB {
                     "'" + driver.getPassword() + "'" + "," +
                     "'" + driver.getNationalID()+ "'" + "," +
                     "'" + driver.getDriverLicense() + "'" + ");";
-            if (!drivers.contains(driver)) {
-                drivers.add(driver);
-                stmt.executeUpdate(sql);
-            } else {
-                System.out.println("User name already exists");
-            }
-        } catch (EmptyStackException | SQLException e) {
+            stmt.executeUpdate(sql);
+        } catch (SQLException e) {
             e.printStackTrace();
         }
         System.out.println("Driver created successfully");
     }
 
     public void register() {
-        String in;
-        System.out.println("Do you want to register as a driver?[Y/N]");
-        in = input.nextLine();
-        if (in.equals("Y") || in.equals("y")) registerDriver();
-        else registerUser();
+        int in;
+        System.out.println("1- Register as User"+"\n"+"2- Register as Driver");
+        in = input.nextInt();
+        if (in == 1) registerUser();
+        else registerDriver();
     }
 
-    public void loadUserDB() {
-        try {
-            System.out.println("Opened persons successfully");
-            ResultSet rs = stmt.executeQuery("SELECT * FROM USER;");
-            while (rs.next()) {
-                System.out.println();
-                System.out.println("USER NAME = " + rs.getString("username"));
-                System.out.println("NAME = " + rs.getString("name"));
-                System.out.println("MOBILE = " + rs.getString("mobile"));
-                System.out.println("PASSWORD = " + rs.getString("password"));
-                User u = new User();
-                u.setName(rs.getString("name"));
-                u.setPassword(rs.getString("password"));
-                u.setUserName(rs.getString("username"));
-                u.setMobileNum(rs.getString("mobile"));
-                if (!users.contains(u)) {
-                    users.add(u);
-                }
-                System.out.println("///////////////////////////////");
-            }
-            rs.close();
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-        System.out.println("Operation done successfully");
-    }
-
-    public void loadDriverDB() {
-        try {
-            System.out.println("Opened persons successfully");
-            ResultSet rs = stmt.executeQuery("SELECT * FROM DRIVER;");
-            while (rs.next()) {
-                System.out.println();
-                System.out.println("USER NAME = " + rs.getString("username"));
-                System.out.println("NAME = " + rs.getString("name"));
-                System.out.println("MOBILE = " + rs.getString("mobile"));
-                System.out.println("PASSWORD = " + rs.getString("password"));
-                System.out.println("STATUS = " + rs.getString("status"));
-                System.out.println("NATIONAL ID = " + rs.getString("nationalid"));
-                System.out.println("LICENSE = " + rs.getString("license"));
-                Driver d = new Driver();
-                d.setName(rs.getString("name"));
-                d.setPassword(rs.getString("password"));
-                d.setUserName(rs.getString("username"));
-                d.setMobileNum(rs.getString("mobile"));
-                d.setNationalID(rs.getString("nationalid"));
-                d.setDriverLicense(rs.getString("license"));
-                if (!drivers.contains(d)) {
-                    drivers.add(d);
-                }
-                System.out.println("///////////////////////////////");
-            }
-            rs.close();
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-        System.out.println("Operation done successfully");
-    }
-
-    public Person login() {
+    public Person loginDriver() {
         Person p = null;
         String username, password;
         System.out.println("User name: ");
@@ -209,32 +156,77 @@ public class UserDriverDB {
         System.out.println("Password: ");
         password = input.nextLine();
         try {
-            for (int i = 0; i < users.size(); i++) {
-                if (users.elementAt(i).getUserName().equals(username)) {
-                    if (users.get(i).getPassword().equals(password)) {
-                        System.out.println("Authentication is successful");
-                        p = users.elementAt(i);
-                        return p;
-                    }
-                }
+            ResultSet rs = stmt.executeQuery("SELECT * FROM DRIVER WHERE USERNAME = '"+username+"'  " +
+                    "AND PASSWORD = '"+password+"' AND STATUS = 'A';");
+            while (rs.next()) {
+                System.out.println();
+                p.setUserName(rs.getString("username"));
+                p.setUserName(rs.getString("name"));
+                p.setMobileNum(rs.getString("mobile"));
+                p.setPassword(rs.getString("password"));
+                System.out.println("///////////////////////////////");
             }
-            for (int i = 0; i < drivers.size(); i++) {
-                if (drivers.elementAt(i).getUserName().equals(username)) {
-                    if (drivers.get(i).getPassword().equals(password)) {
-                        System.out.println("Authentication is successful");
-                        p = drivers.elementAt(i);
-                        return p;
-                    }
-                }
-            }
-            System.out.println("Wrong username or password");
-        } catch (NullPointerException e) {
+            rs.close();
+        } catch (NullPointerException | SQLException e) {
             e.printStackTrace();
         }
-        return null;
+        return p;
     }
 
-    public static void rateDriver(Person p){}
+    public Person loginUser(){
+        Person p = null;
+        String username, password;
+        System.out.println("User name: ");
+        username = input.nextLine();
+        System.out.println("Password: ");
+        password = input.nextLine();
+        try {
+            ResultSet rs = stmt.executeQuery("SELECT * FROM USER WHERE USERNAME = '"+username+"'  " +
+                    "AND PASSWORD = '"+password+"' AND STATUS = 'A';");
+            while (rs.next()) {
+                System.out.println();
+                p.setUserName(rs.getString("username"));
+                p.setUserName(rs.getString("name"));
+                p.setMobileNum(rs.getString("mobile"));
+                p.setPassword(rs.getString("password"));
+                System.out.println("///////////////////////////////");
+            }
+            rs.close();
+        } catch (NullPointerException | SQLException e) {
+            e.printStackTrace();
+        }
+        return p;
+    }
+    public static void rateDriver(Person p) throws SQLException {
+        Scanner scan = new Scanner ( System.in );
+        double rate; // add the list of users coupled with the drivers
+        ///// To make the person p saved in the list of drivers with its rate and username///
+        Statement stmt = null;
+        System.out.print ("Enter the username: " );
+        String username = scan.nextLine ();
+        System.out.print ("Enter the rating from 1 to 5 (1 worst, 5 best) :" );
+        double newRate = scan.nextDouble ();
+        double currRate = Double.parseDouble ( "SELECT RATING\n WHERE USERNAME = '"+username+"';" );
+        currRate = (currRate + newRate)/2;
+        String sql = "UPDATE USER\n" + "SET\n RATING="+ currRate+"\n WHERE USERNAME = '"+username+"';";
+        stmt.executeUpdate ( sql );
+    }
 
-    public void viewAvgRating(Person p){}
+    //driver to view all rating
+    public void viewAllRating(Person p) throws SQLException {
+        String sql = "SELECT * FROM RATING WHERE DRIVER = '"+p.getUserName ()+"';";
+        ResultSet rs = stmt.executeQuery ( sql );
+        System.out.println (rs.getDouble ( "rating" ) );
+        rs.close ();
+    }
+
+    //user to view avg rating of driver
+    public void viewAvgRating(Person p) throws SQLException {
+        // query to get avg rating
+        String sql = "(SELECT FROM RATING " +
+                "AVG(RATING) AS AVGRATING WHERE USERNAME = '"+p.getUserName()+"' GROUP BY AVGRATING);";
+        ResultSet rs = stmt.executeQuery ( sql );
+        System.out.println (rs.getDouble ( "rating" ) );
+        rs.close ();
+    }
 }
