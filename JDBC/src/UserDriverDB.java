@@ -1,9 +1,5 @@
-import java.sql.Connection;
-import java.sql.DriverManager;
-import java.sql.ResultSet;
-import java.sql.Statement;
+import java.sql.*;
 import java.util.Scanner;
-import java.sql.SQLException;
 
 public class UserDriverDB {
     private static Connection connection;
@@ -30,7 +26,8 @@ public class UserDriverDB {
                     " MOBILE            CHAR(20)     NOT NULL, " +
                     " STATUS      TEXT CHECK( STATUS IN ('S','A') )   NOT NULL DEFAULT 'A', " +
                     " EMAIL      CHAR(30) DEFAULT 'null@gmail.com' ," +
-                    " PASSWORD        CHAR(30)     NOT NULL)";
+                    " PASSWORD        CHAR(30)     NOT NULL," +
+                    "RATING  DOUBLE DEAFULT'NULL');";
             stmt.executeUpdate(sql);
             sql = "CREATE TABLE IF NOT EXISTS DRIVER " +
                     "(USERNAME CHAR(50) PRIMARY KEY     NOT NULL," +
@@ -40,7 +37,8 @@ public class UserDriverDB {
                     " EMAIL      CHAR(30) DEFAULT 'null@gmail.com' ," +
                     " NATIONALID      CHAR(30) NOT NULL ," +
                     " LICENSE      CHAR(30) NOT NULL ," +
-                    " PASSWORD        CHAR(30)     NOT NULL)";
+                    " PASSWORD        CHAR(30)     NOT NULL," +
+                    "RATING DOUBLE DEFAULT'NULL');";
             stmt.executeUpdate(sql);
             System.out.println("Opened persons successfully");
         } catch (Exception e) {
@@ -73,11 +71,11 @@ public class UserDriverDB {
             System.out.println("Password: ");
             in = input.nextLine();
             user.setPassword(in);
-            sql = "INSERT INTO USER (USERNAME,NAME,MOBILE,PASSWORD) " +
+            sql = "INSERT INTO USER (USERNAME,NAME,MOBILE,PASSWORD,RATING) " +
                     "VALUES (" + "'" + user.getUserName() + "'" + "," +
                     "'" + user.getName() + "'" + "," +
                     "'" + user.getMobileNum() + "'" + "," +
-                    "'" + user.getPassword() + "'" + ");";
+                    "'" + user.getPassword() + "'" + ",'NULL');";
             stmt.executeUpdate(sql);
         } catch (SQLException e) {
             e.printStackTrace();
@@ -107,13 +105,13 @@ public class UserDriverDB {
             in = input.nextLine(); driver.setNationalID(in);
             System.out.println("Driver License: ");
             in = input.nextLine(); driver.setDriverLicense(in);
-            sql = "INSERT INTO DRIVER (USERNAME,NAME,MOBILE,PASSWORD,NATIONALID,LICENSE) " +
+            sql = "INSERT INTO DRIVER (USERNAME,NAME,MOBILE,PASSWORD,NATIONALID,LICENSE,RATING) " +
                     "VALUES (" + "'" + driver.getUserName() + "'" + "," +
                     "'" + driver.getName() + "'" + "," +
                     "'" + driver.getMobileNum() + "'" + "," +
                     "'" + driver.getPassword() + "'" + "," +
                     "'" + driver.getNationalID()+ "'" + "," +
-                    "'" + driver.getDriverLicense() + "'" + ");";
+                    "'" + driver.getDriverLicense() + "'" + ",'NULL');";
             stmt.executeUpdate(sql);
         } catch (SQLException e) {
             e.printStackTrace();
@@ -139,6 +137,7 @@ public class UserDriverDB {
                 System.out.println("NAME = " + rs.getString("name"));
                 System.out.println("MOBILE = " + rs.getString("mobile"));
                 System.out.println("PASSWORD = " + rs.getString("password"));
+                System.out.println ("RATING = "+rs.getDouble ( "rating" ) );
                 System.out.println("///////////////////////////////");
             }
             rs.close();
@@ -161,6 +160,7 @@ public class UserDriverDB {
                 System.out.println("STATUS = " + rs.getString("status"));
                 System.out.println("NATIONAL ID = " + rs.getString("nationalid"));
                 System.out.println("LICENSE = " + rs.getString("license"));
+                System.out.println ("RATING = "+rs.getDouble ( "rating" ) );
                 System.out.println("///////////////////////////////");
             }
             rs.close();
@@ -186,6 +186,7 @@ public class UserDriverDB {
                 p.setUserName(rs.getString("name"));
                 p.setMobileNum(rs.getString("mobile"));
                 p.setPassword(rs.getString("password"));
+                p.setRating (rs.getDouble ( "rating" ));
                 System.out.println("///////////////////////////////");
             }
             rs.close();
@@ -211,6 +212,7 @@ public class UserDriverDB {
                 p.setUserName(rs.getString("name"));
                 p.setMobileNum(rs.getString("mobile"));
                 p.setPassword(rs.getString("password"));
+                p.setRating (rs.getDouble ( "rating" ));
                 System.out.println("///////////////////////////////");
             }
             rs.close();
@@ -220,7 +222,29 @@ public class UserDriverDB {
         return p;
     }
 
-    public static void rateDriver(Person p){}
+    public static void rateDriver(Person p) throws SQLException {
+        Scanner scan = new Scanner ( System.in );
+        double rate; // add the list of users coupled with the drivers
 
-    public void viewAvgRating(Person p){}
+        ///// To make the person p saved in the list of drivers with its rate and username///
+
+        Connection connection = null;
+        Statement statement = null;
+        System.out.print ("Enter the username: " );
+        String username = scan.nextLine ();
+        System.out.print ("Enter the rating from 1 to 5 (1 worst, 5 best) :" );
+        double newRate = scan.nextDouble ();
+        double currRate = Double.parseDouble ( "SELECT RATING\n WHERE USERNAME = '"+username+"';" );
+        currRate = (currRate + newRate)/2;
+        String sql = "UPDATE USER\n" + "SET\n RATING="+ currRate+"\n WHERE USERNAME = '"+username+"';";
+        statement.executeUpdate ( sql );
+
+    }
+
+    public void viewAvgRating(Person p) throws SQLException {
+        String sql = "SELECT RATING\n FROM PERSON\n WHERE USERNAME = '"+p.getUserName ()+"';";
+        ResultSet rs = stmt.executeQuery ( sql );
+        System.out.println (rs.getDouble ( "rating" ) );
+        rs.close ();
+    }
 }

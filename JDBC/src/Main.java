@@ -1,3 +1,4 @@
+import java.sql.SQLException;
 import java.util.Scanner;
 
 public class Main {
@@ -8,7 +9,7 @@ public class Main {
     private static final UserDriverDB userDriverDB = UserDriverDB.getInstance();
     private static final RidesDB ridesDB = RidesDB.getInstance();
 
-    public static void userPanel(){
+    public static void userPanel() throws SQLException {
         Scanner input = new Scanner(System.in);
         int choice = 0;
         while (choice != 6) {
@@ -106,7 +107,7 @@ public class Main {
         }
     }
 
-    public static void main(String[] args) {
+    public static void main(String[] args) throws SQLException {
         Scanner input = new Scanner(System.in);
         int choice;
         while (true) {

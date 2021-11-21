@@ -12,6 +12,7 @@ public class Person {
     private String mobileNum;
     private String email;
     private String password;
+    private double rating;
 
     public Person() {
     }
@@ -58,6 +59,19 @@ public class Person {
 
     public void setPassword(String password) {
         this.password = password;
+    }
+
+    public double getRating ( ) {
+        return rating;
+    }
+
+    public void setRating ( double rating ) {
+        this.rating = rating;
+    }
+
+    public void updateRating (double rate)
+    {
+        rating = (rating+rate)/2;
     }
 
     //different signature with email

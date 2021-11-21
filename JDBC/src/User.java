@@ -13,7 +13,7 @@ public class User extends Person {
 
     }
 
-    public void rateDriver() {
+    public void rateDriver(String driverUsername, double rate) {
 
     }
 
