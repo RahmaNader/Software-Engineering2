@@ -17,9 +17,22 @@ public class LocationDB {
     private static void setupDbConnection(){
         try {
             Class.forName("LocationDB");
-            connection = DriverManager.getConnection("jdbc:sqlite:locations.db");
+            connection = DriverManager.getConnection("jdbc:sqlite:database");
             stmt = connection.createStatement();
         }catch (ClassNotFoundException | SQLException e) {
+            e.printStackTrace();
+        }
+    }
+
+    private static void closeConnection(){
+        try {
+            connection.close();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        try {
+            stmt.close();
+        } catch (SQLException e) {
             e.printStackTrace();
         }
     }
@@ -35,12 +48,15 @@ public class LocationDB {
         setupDbConnection();
         locations = new Vector<>();
         try {
-            String sql = "CREATE TABLE IF NOT EXISTS LOCATIONS " +
-                    "(ID     INTEGER    PRIMARY KEY      AUTOINCREMENT," +
-                    "USERNAME   CHAR(50)  ," +
-                    "LOCATION    CHAR(100) )";
+            String sql = """
+                    CREATE TABLE IF NOT EXISTS LOCATIONS
+                        (ID     INTEGER    PRIMARY KEY      AUTOINCREMENT,
+                        USERNAME   CHAR(50)  NOT NULL,
+                        LOCATION    CHAR(100) NOT NULL,
+                        FOREIGN KEY (USERNAME) REFERENCES DRIVER (USERNAME));""";
             stmt.executeUpdate(sql);
             System.out.println("Opened locations successfully");
+            closeConnection();
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -55,7 +71,7 @@ public class LocationDB {
         setupDbConnection();
         try {
             Class.forName("LocationDB");
-            connection = DriverManager.getConnection("jdbc:sqlite:locations.db");
+            connection = DriverManager.getConnection("jdbc:sqlite:database");
             connection.setAutoCommit(false);
             System.out.println("Opened LOCATIONS successfully");
             stmt = connection.createStatement();
@@ -65,6 +81,7 @@ public class LocationDB {
                         "VALUES (" + "'" + in + "'" + "," + "'" + p.getUserName() + "'" + ");";
             stmt.executeUpdate(sql);
             connection.commit();
+            closeConnection();
         } catch (Exception e) {
             System.err.println(e.getClass().getName() + ": " + e.getMessage());
         }
@@ -76,11 +93,8 @@ public class LocationDB {
         Vector<String> fav = new Vector<>();
         setupDbConnection();
         try {
-            Class.forName("LocationDB");
-            connection = DriverManager.getConnection("jdbc:sqlite:locations.db");
             connection.setAutoCommit(false);
             System.out.println("Opened locations successfully");
-            stmt = connection.createStatement();
             ResultSet rs = stmt.executeQuery("SELECT * FROM LOCATIONS WHERE USERNAME='" + p.getUserName() + "';");
             while (rs.next()) {
                 System.out.println();
@@ -89,6 +103,7 @@ public class LocationDB {
                 System.out.println("////////////////////");
             }
             rs.close();
+            closeConnection();
         } catch (Exception e) {
             System.err.println(e.getClass().getName() + ": " + e.getMessage());
         }
@@ -99,16 +114,13 @@ public class LocationDB {
     public void isPlaceRequested(Person p) {
         setupDbConnection();
         try {
-            Class.forName("LocationDB");
-            connection = DriverManager.getConnection("jdbc:sqlite:locations.db");
             connection.setAutoCommit(false);
             System.out.println("Opened locations successfully");
-            stmt = connection.createStatement();
             ResultSet locationrs = stmt.executeQuery("SELECT * FROM LOCATIONS WHERE USERNAME='" + p.getUserName() + "';");
             try{
             while (locationrs.next()) {
                 Class.forName("RidesDB");
-                Connection connection2 = DriverManager.getConnection("jdbc:sqlite:rides.db");
+                Connection connection2 = DriverManager.getConnection("jdbc:sqlite:database");
                 connection2.setAutoCommit(false);
                 System.out.println("Opened rides successfully");
                 Statement stmt2 = connection2.createStatement();
@@ -124,6 +136,7 @@ public class LocationDB {
                 stmt2.close();
                 connection2.close();
                 ridesrs.close();
+                closeConnection();
             }}catch (ClassNotFoundException | SQLException e){e.printStackTrace();}
             locationrs.close();
         } catch (Exception e) {

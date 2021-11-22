@@ -1,7 +1,4 @@
-import java.sql.Connection;
-import java.sql.DriverManager;
-import java.sql.ResultSet;
-import java.sql.Statement;
+import java.sql.*;
 import java.util.Scanner;
 import java.util.Vector;
 
@@ -15,10 +12,24 @@ public class RidesDB {
 
     private static void setupDbConnection(){
         try{
-            Class.forName("UserDriverDB");
-            connection = DriverManager.getConnection("jdbc:sqlite:persons.db");
+            Class.forName("RidesDB");
+            connection = DriverManager.getConnection("jdbc:sqlite:database");
+            connection.setAutoCommit(false);
             stmt = connection.createStatement();
         }catch (Exception e){
+            e.printStackTrace();
+        }
+    }
+
+    private static void closeConnection(){
+        try {
+            connection.close();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        try {
+            stmt.close();
+        } catch (SQLException e) {
             e.printStackTrace();
         }
     }
@@ -27,18 +38,22 @@ public class RidesDB {
         setupDbConnection();
         try {
             Class.forName("RidesDB");
-            connection = DriverManager.getConnection("jdbc:sqlite:rides.db");
+            connection = DriverManager.getConnection("jdbc:sqlite:database");
             stmt = connection.createStatement();
-            String sql = "CREATE TABLE IF NOT EXISTS RIDES " +
-                    "(ID        INTEGER    PRIMARY KEY      AUTOINCREMENT," +
-                    " SOURCE           CHAR(50)    NOT NULL, " +
-                    " DESTINATION            CHAR(50)     NOT NULL, " +
-                    " DRIVER            CHAR(50)     , " +
-                    " USER            CHAR(50)     NOT NULL , " +
-                    " PRICE            FLOAT(2)     DEFAULT 0 , " +
-                    " STATUS      TEXT CHECK( STATUS IN ('A','D','P') )   NOT NULL DEFAULT 'P')";
+            String sql = """
+                    CREATE TABLE IF NOT EXISTS RIDES
+                         (ID        INTEGER    PRIMARY KEY      AUTOINCREMENT,
+                         SOURCE           CHAR(50)    NOT NULL,
+                         DESTINATION            CHAR(50)     NOT NULL,
+                         STATUS      TEXT CHECK( STATUS IN ('A','D','P') )  NOT NULL DEFAULT 'P',
+                         PRICE            FLOAT(2)     DEFAULT 0,
+                         DRIVER            CHAR(50)     ,
+                         USER            CHAR(50)     NOT NULL ,
+                         FOREIGN KEY (DRIVER) REFERENCES DRIVER (USERNAME),
+                         FOREIGN KEY (USER) REFERENCES USER (USERNAME));""";
             stmt.executeUpdate(sql);
             connection.setAutoCommit(false);
+            closeConnection();
             System.out.println("Opened Rides successfully");
         } catch (Exception e) {
             System.out.println(e.getMessage());
@@ -56,7 +71,7 @@ public class RidesDB {
         setupDbConnection();
         try {
             Class.forName("RidesDB");
-            connection = DriverManager.getConnection("jdbc:sqlite:rides.db");
+            connection = DriverManager.getConnection("jdbc:sqlite:database");
             connection.setAutoCommit(false);
             System.out.println("Opened rides successfully");
             stmt = connection.createStatement();
@@ -71,6 +86,7 @@ public class RidesDB {
                 System.out.println("STATUS = " + rs.getString("status"));
                 System.out.println("////////////////////");
             }
+            closeConnection();
             rs.close();
         } catch (Exception e) {
             System.err.println(e.getClass().getName() + ": " + e.getMessage());
@@ -82,7 +98,7 @@ public class RidesDB {
         setupDbConnection();
         try {
             Class.forName("RidesDB");
-            connection = DriverManager.getConnection("jdbc:sqlite:rides.db");
+            connection = DriverManager.getConnection("jdbc:sqlite:database");
             connection.setAutoCommit(false);
             System.out.println("Opened database successfully");
             stmt = connection.createStatement();
@@ -98,6 +114,7 @@ public class RidesDB {
                     "VALUES ("+ "'" + ride.getSource() + "'" + "," + "'" + ride.getDestination() + "'" + "," + "'" + ride.getUser() + "'" + ");";
             stmt.executeUpdate(sql);
             connection.commit();
+            closeConnection();
         } catch (Exception e) {
             System.err.println(e.getClass().getName() + ": " + e.getMessage());
         }
@@ -110,7 +127,7 @@ public class RidesDB {
         int in;
         try {
             Class.forName("RidesDB");
-            connection = DriverManager.getConnection("jdbc:sqlite:rides.db");
+            connection = DriverManager.getConnection("jdbc:sqlite:database");
             connection.setAutoCommit(false);
             System.out.println("Opened rides successfully");
             stmt = connection.createStatement();
@@ -126,6 +143,7 @@ public class RidesDB {
                 System.out.println("////////////////////");
             }
             rs.close();
+            closeConnection();
         } catch (Exception e) {
             System.err.println(e.getClass().getName() + ": " + e.getMessage());
         }
@@ -137,11 +155,12 @@ public class RidesDB {
 
     //user method
     public void acceptRequest(){
+        setupDbConnection();
         System.out.println("Please enter request id");
         int in = input.nextInt();
         try {
             Class.forName("RidesDB");
-            connection = DriverManager.getConnection("jdbc:sqlite:rides.db");
+            connection = DriverManager.getConnection("jdbc:sqlite:database");
             connection.setAutoCommit(false);
             System.out.println("Opened rides successfully");
             stmt = connection.createStatement();
@@ -154,6 +173,7 @@ public class RidesDB {
             stmt.executeUpdate(sql);
             connection.commit();
             rs.close();
+            closeConnection();
         } catch (Exception e) {
             System.err.println(e.getClass().getName() + ": " + e.getMessage());
         }
@@ -166,12 +186,10 @@ public class RidesDB {
 
     //driver method
     public void makeOffer(Person p){
+        setupDbConnection();
         System.out.println("Please enter ride id");
         int in = input.nextInt();
         try {
-            Class.forName("RidesDB");
-            connection = DriverManager.getConnection("jdbc:sqlite:rides.db");
-            connection.setAutoCommit(false);
             System.out.println("Opened rides successfully");
             ResultSet rs = stmt.executeQuery("SELECT * FROM RIDES WHERE ID = "+in+";");
             while (rs.next()) {
@@ -182,13 +200,15 @@ public class RidesDB {
             }
             stmt = connection.createStatement();
             System.out.println("Enter a suitable price:");
-            in = input.nextInt();
-            String sql = "UPDATE RIDES set PRICE = "+in+" WHERE ID ="+in+";";
+            int price = input.nextInt();
+            String sql = "UPDATE RIDES set PRICE = "+price+" WHERE ID ="+in+";";
             stmt.executeUpdate(sql);
+            connection.commit();
             sql = "UPDATE RIDES set DRIVER = '"+p.getUserName()+"' WHERE ID ="+in+";";
             stmt.executeUpdate(sql);
             connection.commit();
             rs.close();
+            closeConnection();
         } catch (Exception e) {
             System.err.println(e.getClass().getName() + ": " + e.getMessage());
         }

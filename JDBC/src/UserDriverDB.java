@@ -14,9 +14,22 @@ public class UserDriverDB {
     private static void setupDbConnection(){
         try{
             Class.forName("UserDriverDB");
-            connection = DriverManager.getConnection("jdbc:sqlite:persons.db");
+            connection = DriverManager.getConnection("jdbc:sqlite:database");
             stmt = connection.createStatement();
         }catch (Exception e){
+            e.printStackTrace();
+        }
+    }
+
+    private static void closeConnection(){
+        try {
+            connection.close();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        try {
+            stmt.close();
+        } catch (SQLException e) {
             e.printStackTrace();
         }
     }
@@ -24,49 +37,50 @@ public class UserDriverDB {
     private UserDriverDB() {
         setupDbConnection();
         try {
-            String sql = "CREATE TABLE IF NOT EXISTS USER " +
-                    "(USERNAME CHAR(50) PRIMARY KEY     NOT NULL," +
-                    " NAME           TEXT    NOT NULL, " +
-                    " MOBILE            CHAR(20)     NOT NULL, " +
-                    " STATUS      TEXT CHECK( STATUS IN ('S','A') )   NOT NULL DEFAULT 'A', " +
-                    " EMAIL      CHAR(30) DEFAULT 'null@gmail.com' ," +
-                    " PASSWORD        CHAR(30)     NOT NULL);";
+            String sql = """
+                    CREATE TABLE IF NOT EXISTS USER
+                        (USER_NAME CHAR(50) PRIMARY KEY NOT NULL,
+                        NAME           TEXT    NOT NULL,
+                        MOBILE            CHAR(20)     NOT NULL,
+                        STATUS      TEXT CHECK( STATUS IN ('S','A') )   NOT NULL DEFAULT 'A',
+                        EMAIL      CHAR(30) DEFAULT 'null@gmail.com' ,
+                        PASSWORD        CHAR(30)     NOT NULL);""";
             stmt.executeUpdate(sql);
-            sql = "CREATE TABLE IF NOT EXISTS DRIVER " +
-                    "(USERNAME CHAR(50) PRIMARY KEY     NOT NULL," +
-                    " NAME           TEXT    NOT NULL, " +
-                    " MOBILE            CHAR(20)     NOT NULL, " +
-                    " STATUS      TEXT CHECK( STATUS IN ('S','P','A') )   NOT NULL DEFAULT 'P', " +
-                    " EMAIL      CHAR(30) DEFAULT 'null@gmail.com' ," +
-                    " NATIONALID      CHAR(30) NOT NULL ," +
-                    " LICENSE      CHAR(30) NOT NULL ," +
-                    " PASSWORD        CHAR(30)     NOT NULL);";
+            sql = """
+                    CREATE TABLE IF NOT EXISTS DRIVER
+                        (USERNAME CHAR(50) PRIMARY KEY     NOT NULL,
+                        NAME           TEXT    NOT NULL,
+                        MOBILE            CHAR(20)     NOT NULL,
+                        STATUS      TEXT CHECK( STATUS IN ('S','P','A') )   NOT NULL DEFAULT 'P',
+                        EMAIL      CHAR(30) DEFAULT 'null@gmail.com' ,
+                        NATIONALID      CHAR(30) NOT NULL ,
+                        LICENSE      CHAR(30) NOT NULL ,
+                        PASSWORD        CHAR(30)     NOT NULL);""";
             stmt.executeUpdate(sql);
             System.out.println("Opened persons successfully");
             createRating();
+            closeConnection();
         } catch (Exception e) {
             e.printStackTrace();
         }
     }
-/*
-import java.io.BufferedReader; import java.io.FileNotFoundException; import java.io.FileReader; import java.io.Reader; import java.sql.Connection; import java.sql.DriverManager; import java.sql.SQLException; import org.apache.ibatis.jdbc.ScriptRunner; public class RunningScripts { public static void main(String args[]) throws Exception { //Registering the Driver DriverManager.registerDriver(new com.mysql.jdbc.Driver()); //Getting the connection String mysqlUrl = "jdbc:mysql://localhost/talakai_noppi"; Connection con = DriverManager.getConnection(mysqlUrl, "root", "password"); System.out.println("Connection established......"); //Initialize the script runner ScriptRunner sr = new ScriptRunner(con); /
- */
 
 
     private void createRating() throws SQLException {
+        setupDbConnection();
         String sql;
-        sql = "CREATE TABLE IF NOT EXISTS RATING " +
-                "(ID        INTEGER    PRIMARY KEY      AUTOINCREMENT," +
-                "RATE DOUBLE NOT NULL DEFAULT 0," +
-                " USER    CHAR(50)  NOT NULL ," +
-                "    FOREIGN KEY (USER)" +
-                "       REFERENCES USER (USERNAME),"+
-                " DRIVER    CHAR(50)  NOT NULL ," +
-                "    FOREIGN KEY (DRIVER)" +
-                "       REFERENCES DRIVER (USERNAME) );";
-        //stmt.executeUpdate(sql);
-        long executeLargeUpdate = stmt.executeLargeUpdate(sql);
+        sql = """
+                CREATE TABLE IF NOT EXISTS RATING
+                    (ID        INTEGER    PRIMARY KEY      AUTOINCREMENT,
+                    RATE DOUBLE NOT NULL DEFAULT 0,
+                    USER    CHAR(50)  NOT NULL,
+                    DRIVER CHAR(50) NOT NULL,
+                    FOREIGN KEY (USER) REFERENCES USER (USER_NAME),
+                    FOREIGN KEY (DRIVER) REFERENCES DRIVER (USERNAME) );""";
+        stmt.executeUpdate(sql);
+        closeConnection();
     }
+
     public static UserDriverDB getInstance(){
         if(uniqueInstance == null){
             uniqueInstance = new UserDriverDB();
@@ -75,12 +89,13 @@ import java.io.BufferedReader; import java.io.FileNotFoundException; import java
     }
 
     public void registerUser() {
+        setupDbConnection();
         String in;
         try {
             System.out.println("Opened persons successfully");
             User user = new User();
             String sql;
-            System.out.println("User name: ");
+            System.out.println("User Name: ");
             in = input.nextLine();
             user.setUserName(in);
             System.out.println("Name: ");
@@ -92,12 +107,13 @@ import java.io.BufferedReader; import java.io.FileNotFoundException; import java
             System.out.println("Password: ");
             in = input.nextLine();
             user.setPassword(in);
-            sql = "INSERT INTO USER (USERNAME,NAME,MOBILE,PASSWORD) " +
+            sql = "INSERT INTO USER (USER_NAME,NAME,MOBILE,PASSWORD) " +
                     "VALUES (" + "'" + user.getUserName() + "'" + "," +
                     "'" + user.getName() + "'" + "," +
                     "'" + user.getMobileNum() + "'" + "," +
                     "'" + user.getPassword() + "'" + ");";
-            stmt.executeUpdate(sql);
+            stmt.execute(sql);
+        closeConnection();
         } catch (SQLException e) {
             e.printStackTrace();
         }
@@ -105,12 +121,13 @@ import java.io.BufferedReader; import java.io.FileNotFoundException; import java
     }
 
     public void registerDriver() {
+        setupDbConnection();
         String in;
         try {
             System.out.println("Opened persons successfully");
             Driver driver = new Driver();
             String sql;
-            System.out.println("User name: ");
+            System.out.println("User Name: ");
             in = input.nextLine();
             driver.setUserName(in);
             System.out.println("Name: ");
@@ -134,6 +151,7 @@ import java.io.BufferedReader; import java.io.FileNotFoundException; import java
                     "'" + driver.getNationalID()+ "'" + "," +
                     "'" + driver.getDriverLicense() + "'" + ");";
             stmt.executeUpdate(sql);
+        closeConnection();
         } catch (SQLException e) {
             e.printStackTrace();
         }
@@ -144,12 +162,14 @@ import java.io.BufferedReader; import java.io.FileNotFoundException; import java
         int in;
         System.out.println("1- Register as User"+"\n"+"2- Register as Driver");
         in = input.nextInt();
+        input.nextLine();
         if (in == 1) registerUser();
         else registerDriver();
     }
 
     public Person loginDriver() {
-        Person p = null;
+        setupDbConnection();
+        Person p = new Person();
         String username, password;
         System.out.println("User name: ");
         username = input.nextLine();
@@ -167,6 +187,7 @@ import java.io.BufferedReader; import java.io.FileNotFoundException; import java
                 System.out.println("///////////////////////////////");
             }
             rs.close();
+            closeConnection();
         } catch (NullPointerException | SQLException e) {
             e.printStackTrace();
         }
@@ -174,59 +195,64 @@ import java.io.BufferedReader; import java.io.FileNotFoundException; import java
     }
 
     public Person loginUser(){
-        Person p = null;
+        setupDbConnection();
+        Person p  = new Person() ;
         String username, password;
         System.out.println("User name: ");
         username = input.nextLine();
         System.out.println("Password: ");
         password = input.nextLine();
         try {
-            ResultSet rs = stmt.executeQuery("SELECT * FROM USER WHERE USERNAME = '"+username+"'  " +
+            ResultSet rs = stmt.executeQuery("SELECT * FROM USER WHERE USER_NAME = '"+username+"'  " +
                     "AND PASSWORD = '"+password+"' AND STATUS = 'A';");
             while (rs.next()) {
                 System.out.println();
-                p.setUserName(rs.getString("username"));
+                p.setUserName(rs.getString("user_name"));
                 p.setUserName(rs.getString("name"));
                 p.setMobileNum(rs.getString("mobile"));
                 p.setPassword(rs.getString("password"));
                 System.out.println("///////////////////////////////");
             }
             rs.close();
+            closeConnection();
         } catch (NullPointerException | SQLException e) {
             e.printStackTrace();
         }
         return p;
     }
     public static void rateDriver(Person p) throws SQLException {
+        setupDbConnection();
         Scanner scan = new Scanner ( System.in );
-        double rate; // add the list of users coupled with the drivers
-        ///// To make the person p saved in the list of drivers with its rate and username///
-        Statement stmt = null;
         System.out.print ("Enter the username: " );
         String username = scan.nextLine ();
         System.out.print ("Enter the rating from 1 to 5 (1 worst, 5 best) :" );
         double newRate = scan.nextDouble ();
-        double currRate = Double.parseDouble ( "SELECT RATING\n WHERE USERNAME = '"+username+"';" );
-        currRate = (currRate + newRate)/2;
-        String sql = "UPDATE USER\n" + "SET\n RATING="+ currRate+"\n WHERE USERNAME = '"+username+"';";
-        stmt.executeUpdate ( sql );
+        String sql = "INSERT INTO RATING (USER,DRIVER,RATE) " +
+                "VALUES (" + "'" + p.getUserName() + "'" + "," +
+                "'" + username+ "'" + "," + newRate +");";
+        stmt.executeUpdate(sql);
+        closeConnection();
     }
 
     //driver to view all rating
     public void viewAllRating(Person p) throws SQLException {
+        setupDbConnection();
         String sql = "SELECT * FROM RATING WHERE DRIVER = '"+p.getUserName ()+"';";
         ResultSet rs = stmt.executeQuery ( sql );
         System.out.println (rs.getDouble ( "rating" ) );
         rs.close ();
+        closeConnection();
     }
 
     //user to view avg rating of driver
     public void viewAvgRating(Person p) throws SQLException {
+        setupDbConnection();
         // query to get avg rating
         String sql = "(SELECT FROM RATING " +
                 "AVG(RATING) AS AVGRATING WHERE USERNAME = '"+p.getUserName()+"' GROUP BY AVGRATING);";
         ResultSet rs = stmt.executeQuery ( sql );
         System.out.println (rs.getDouble ( "rating" ) );
         rs.close ();
+        closeConnection();
     }
 }

@@ -14,6 +14,7 @@ public class Person {
     private String password;
 
     public Person() {
+        userName = "null";
     }
 
     public Person(String userName, String name, String mobileNum, String password) {

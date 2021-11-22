@@ -10,7 +10,6 @@ public class Main {
     private static final RidesDB ridesDB = RidesDB.getInstance();
 
     public static void userPanel(){
-        Scanner input = new Scanner(System.in);
         int choice = 0;
         while (choice != 6) {
             System.out.println("1- Request ride"+"\n"+"2- View requests"+"\n"+"3- Accept request"+
@@ -131,7 +130,7 @@ public class Main {
                 }
                 else if(choice2 == 1) {
                     logged = userDriverDB.loginUser();
-                    if (logged != null) {
+                    if (logged.getUserName()!="null") {
                         userPanel();
                     }
                 }
