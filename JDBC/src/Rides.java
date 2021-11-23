@@ -54,4 +54,3 @@ public class Rides {
         this.driver = driver;
     }
 }
-

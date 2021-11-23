@@ -37,25 +37,25 @@ public class UserDriverDB {
     private UserDriverDB() {
         setupDbConnection();
         try {
-            String sql = """
-                    CREATE TABLE IF NOT EXISTS USER
-                        (USER_NAME CHAR(50) PRIMARY KEY NOT NULL,
-                        NAME           TEXT    NOT NULL,
-                        MOBILE            CHAR(20)     NOT NULL,
-                        STATUS      TEXT CHECK( STATUS IN ('S','A') )   NOT NULL DEFAULT 'A',
-                        EMAIL      CHAR(30) DEFAULT 'null@gmail.com' ,
-                        PASSWORD        CHAR(30)     NOT NULL);""";
+            String sql =
+                    "CREATE TABLE IF NOT EXISTS USER"+
+                        "(USER_NAME CHAR(50) PRIMARY KEY NOT NULL,"+
+                        "NAME           TEXT    NOT NULL,"+
+                        "MOBILE            CHAR(20)     NOT NULL,"+
+                        "STATUS      TEXT CHECK( STATUS IN ('S','A') )   NOT NULL DEFAULT 'A',"+
+                        "EMAIL      CHAR(30) DEFAULT 'null@gmail.com' ,"+
+                        "PASSWORD        CHAR(30)     NOT NULL);";
             stmt.executeUpdate(sql);
-            sql = """
-                    CREATE TABLE IF NOT EXISTS DRIVER
-                        (USERNAME CHAR(50) PRIMARY KEY     NOT NULL,
-                        NAME           TEXT    NOT NULL,
-                        MOBILE            CHAR(20)     NOT NULL,
-                        STATUS      TEXT CHECK( STATUS IN ('S','P','A') )   NOT NULL DEFAULT 'P',
-                        EMAIL      CHAR(30) DEFAULT 'null@gmail.com' ,
-                        NATIONALID      CHAR(30) NOT NULL ,
-                        LICENSE      CHAR(30) NOT NULL ,
-                        PASSWORD        CHAR(30)     NOT NULL);""";
+            sql =
+                    "CREATE TABLE IF NOT EXISTS DRIVER"+
+                        "(USERNAME CHAR(50) PRIMARY KEY     NOT NULL,"+
+                        "NAME           TEXT    NOT NULL,"+
+                        "MOBILE            CHAR(20)     NOT NULL,"+
+                        "STATUS      TEXT CHECK( STATUS IN ('S','P','A') )   NOT NULL DEFAULT 'P',"+
+                        "EMAIL      CHAR(30) DEFAULT 'null@gmail.com' ,"+
+                        "NATIONALID      CHAR(30) NOT NULL ,"+
+                        "LICENSE      CHAR(30) NOT NULL ,"+
+                        "PASSWORD        CHAR(30)     NOT NULL);";
             stmt.executeUpdate(sql);
             System.out.println("Opened persons successfully");
             createRating();
@@ -69,14 +69,14 @@ public class UserDriverDB {
     private void createRating() throws SQLException {
         setupDbConnection();
         String sql;
-        sql = """
-                CREATE TABLE IF NOT EXISTS RATING
-                    (ID        INTEGER    PRIMARY KEY      AUTOINCREMENT,
-                    RATE DOUBLE NOT NULL DEFAULT 0,
-                    USER    CHAR(50)  NOT NULL,
-                    DRIVER CHAR(50) NOT NULL,
-                    FOREIGN KEY (USER) REFERENCES USER (USER_NAME),
-                    FOREIGN KEY (DRIVER) REFERENCES DRIVER (USERNAME) );""";
+        sql =
+                "CREATE TABLE IF NOT EXISTS RATING"+
+                    "(ID        INTEGER    PRIMARY KEY      AUTOINCREMENT,"+
+                    "RATE DOUBLE NOT NULL DEFAULT 0,"+
+                    "USER    CHAR(50)  NOT NULL,"+
+                    "DRIVER CHAR(50) NOT NULL,"+
+                    "FOREIGN KEY (USER) REFERENCES USER (USER_NAME),"+
+                    "FOREIGN KEY (DRIVER) REFERENCES DRIVER (USERNAME) );";
         stmt.executeUpdate(sql);
         closeConnection();
     }

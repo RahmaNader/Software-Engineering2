@@ -48,12 +48,12 @@ public class LocationDB {
         setupDbConnection();
         locations = new Vector<>();
         try {
-            String sql = """
-                    CREATE TABLE IF NOT EXISTS LOCATIONS
-                        (ID     INTEGER    PRIMARY KEY      AUTOINCREMENT,
-                        USERNAME   CHAR(50)  NOT NULL,
-                        LOCATION    CHAR(100) NOT NULL,
-                        FOREIGN KEY (USERNAME) REFERENCES DRIVER (USERNAME));""";
+            String sql =
+                    "CREATE TABLE IF NOT EXISTS LOCATIONS"+
+                        "(ID     INTEGER    PRIMARY KEY      AUTOINCREMENT,"+
+                        "USERNAME   CHAR(50)  NOT NULL,"+
+                        "LOCATION    CHAR(100) NOT NULL,"+
+                        "FOREIGN KEY (USERNAME) REFERENCES DRIVER (USERNAME));";
             stmt.executeUpdate(sql);
             System.out.println("Opened locations successfully");
             closeConnection();

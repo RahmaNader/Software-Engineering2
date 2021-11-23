@@ -40,17 +40,17 @@ public class RidesDB {
             Class.forName("RidesDB");
             connection = DriverManager.getConnection("jdbc:sqlite:database");
             stmt = connection.createStatement();
-            String sql = """
-                    CREATE TABLE IF NOT EXISTS RIDES
-                         (ID        INTEGER    PRIMARY KEY      AUTOINCREMENT,
-                         SOURCE           CHAR(50)    NOT NULL,
-                         DESTINATION            CHAR(50)     NOT NULL,
-                         STATUS      TEXT CHECK( STATUS IN ('A','D','P') )  NOT NULL DEFAULT 'P',
-                         PRICE            FLOAT(2)     DEFAULT 0,
-                         DRIVER            CHAR(50)     ,
-                         USER            CHAR(50)     NOT NULL ,
-                         FOREIGN KEY (DRIVER) REFERENCES DRIVER (USERNAME),
-                         FOREIGN KEY (USER) REFERENCES USER (USERNAME));""";
+            String sql =
+                    "CREATE TABLE IF NOT EXISTS RIDES"+
+                         "(ID        INTEGER    PRIMARY KEY      AUTOINCREMENT,"+
+                         "SOURCE           CHAR(50)    NOT NULL,"+
+                         "DESTINATION            CHAR(50)     NOT NULL,"+
+                         "STATUS      TEXT CHECK( STATUS IN ('A','D','P') )  NOT NULL DEFAULT 'P',"+
+                         "PRICE            FLOAT(2)     DEFAULT 0,"+
+                         "DRIVER            CHAR(50)     ,"+
+                         "USER            CHAR(50)     NOT NULL ,"+
+                         "FOREIGN KEY (DRIVER) REFERENCES DRIVER (USERNAME),"+
+                         "FOREIGN KEY (USER) REFERENCES USER (USERNAME));";
             stmt.executeUpdate(sql);
             connection.setAutoCommit(false);
             closeConnection();
@@ -219,4 +219,3 @@ public class RidesDB {
 
     }
 }
-
