@@ -9,7 +9,7 @@ public class UserDriverDB {
     private static Connection connection;
     private static Statement stmt;
     private static UserDriverDB uniqueInstance;
-    private final Scanner input = new Scanner(System.in);
+    private static final Scanner input = new Scanner(System.in);
 
     private static void setupDbConnection(){
         try{
@@ -249,10 +249,18 @@ public class UserDriverDB {
     public static void viewAvgRating(Person p) throws SQLException {
         setupDbConnection();
         // query to get avg rating
-        String sql = "(SELECT FROM RATING " +
-                "AVG(RATING) AS AVGRATING WHERE USERNAME = '"+p.getUserName()+"' GROUP BY AVGRATING);";
-        ResultSet rs = stmt.executeQuery ( sql );
-        System.out.println (rs.getDouble ( "Rate" ) );
+        System.out.println("Enter driver user name");
+        String in = input.nextLine();
+        //while loop
+        String sql = "SELECT RATE FROM RATING WHERE DRIVER ='"+in+"';";
+        ResultSet rs = stmt.executeQuery (sql);
+        double avg = 0; int total = 1;
+        while (rs.next()) {
+            avg += rs.getDouble("rate");
+            avg /= total;
+            total++;
+        }
+        System.out.println("Average rating for selected driver : "+avg);
         rs.close ();
         closeConnection();
     }

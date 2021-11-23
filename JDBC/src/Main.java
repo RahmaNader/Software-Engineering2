@@ -40,7 +40,7 @@ public class Main {
 
     public static void driverPanel() throws SQLException {
         int choice = 0;
-        while (choice != 5) {
+        while (choice != 6) {
             System.out.println("1- View rides"+"\n"+"2- Make offer"+"\n"+"3- Add favourite place"+
                     "\n"+"4- View active requests in favourite places"+"\n"+"5- View all rating\n"+"6- Exit");
             choice = input.nextInt();

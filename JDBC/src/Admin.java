@@ -4,7 +4,7 @@ public class Admin {
     private static Admin adminInstance;
     private static Connection connection;
     private static Statement stmt;
-
+    //admin username and password
 
     private Admin(){
         //private admin constructor

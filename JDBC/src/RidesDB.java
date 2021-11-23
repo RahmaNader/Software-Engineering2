@@ -216,6 +216,31 @@ public class RidesDB {
 
     //driver method
     public void displayFavorite(Person p){
-
+        setupDbConnection();
+        try {
+            Class.forName("RidesDB");
+            connection = DriverManager.getConnection("jdbc:sqlite:database");
+            connection.setAutoCommit(false);
+            System.out.println("Opened rides successfully");
+            stmt = connection.createStatement();
+            ResultSet rs = stmt.executeQuery("SELECT * FROM RIDES" +
+                    "            INNER JOIN LOCATIONS" +
+                    "            ON RIDES.SOURCE = LOCATIONS.LOCATION" +
+                    "            WHERE LOCATIONS.USERNAME = '"+p.getUserName()+"' AND RIDES.STATUS = 'P';");
+            while (rs.next()) {
+                System.out.println();
+                System.out.println("ID = " + rs.getString("id"));
+                System.out.println("SOURCE = " + rs.getString("source"));
+                System.out.println("DESTINATION = " + rs.getString("destination"));
+                System.out.println("DRIVER = " + rs.getString("driver"));
+                System.out.println("PRICE = " + rs.getString("price"));
+                System.out.println("STATUS = " + rs.getString("status"));
+                System.out.println("////////////////////");
+            }
+            rs.close();
+            closeConnection();
+        } catch (Exception e) {
+            System.err.println(e.getClass().getName() + ": " + e.getMessage());
+        }
     }
 }
