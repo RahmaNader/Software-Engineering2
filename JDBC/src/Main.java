@@ -9,11 +9,11 @@ public class Main {
     private static final UserDriverDB userDriverDB = UserDriverDB.getInstance();
     private static final RidesDB ridesDB = RidesDB.getInstance();
 
-    public static void userPanel(){
+    public static void userPanel() throws SQLException {
         int choice = 0;
-        while (choice != 6) {
+        while (choice != 7) {
             System.out.println("1- Request ride"+"\n"+"2- View requests"+"\n"+"3- Accept request"+
-                    "\n"+"4- Refuse request"+"\n"+"5- Rate driver"+"\n"+"6- Exit");
+                    "\n"+"4- Refuse request"+"\n"+"5- Rate driver\n"+"6- View driver rate"+"\n"+"7- Exit");
             choice = input.nextInt();
             if (choice == 1) {
                 ridesDB.requestRide(logged);
@@ -28,33 +28,36 @@ public class Main {
                 ridesDB.refuseRequest(logged);
             }
             else if (choice == 5) {
-                try {
-                    UserDriverDB.rateDriver(logged);
-                } catch (SQLException e) {
-                    e.printStackTrace();
-                }
+                UserDriverDB.rateDriver(logged);
+            }
+            else if(choice == 6){
+                UserDriverDB.viewAvgRating(logged);
+            }else{
+                continue;
             }
         }
     }
 
-    public static void driverPanel() {
+    public static void driverPanel() throws SQLException {
         int choice = 0;
         while (choice != 5) {
             System.out.println("1- View rides"+"\n"+"2- Make offer"+"\n"+"3- Add favourite place"+
-                    "\n"+"4- View active requests in favourite places"+"\n"+"5- Exit");
+                    "\n"+"4- View active requests in favourite places"+"\n"+"5- View all rating\n"+"6- Exit");
             choice = input.nextInt();
             if (choice == 1) {
                 ridesDB.loadDB();
             }
-            if (choice == 2) {
+            else if (choice == 2) {
                 ridesDB.makeOffer(logged);
             }
-            if(choice == 3){
+            else if(choice == 3){
                 locationDB.addFavourite(logged);
             }
-            if(choice == 4){
+            else if(choice == 4){
                 ridesDB.displayFavorite(logged);
-            }
+            }else if( choice == 5){
+                UserDriverDB.viewAllRating(logged);
+            }else continue;
         }
     }
 
@@ -110,7 +113,7 @@ public class Main {
         }
     }
 
-    public static void main(String[] args) {
+    public static void main(String[] args) throws SQLException {
         Scanner input = new Scanner(System.in);
         int choice;
         while (true) {
@@ -132,17 +135,24 @@ public class Main {
                     logged = userDriverDB.loginUser();
                     if (logged.getUserName()!="null") {
                         userPanel();
+                    }else{
+                        System.out.println("Wrong Username or Password");
                     }
                 }
                 else if(choice2 == 2){
                     logged = userDriverDB.loginDriver();
-                    if (logged != null) {
+                    if (logged.getUserName() != "null") {
                         driverPanel();
+                    }else{
+                        System.out.println("Wrong Username or Password or Your account isn't activated yet");
                     }
                 }
             }
-            else{
+            else if (choice == 3){
                 System.exit(0);
+            }
+            else{
+                System.out.println("Invalid Input\n=======================");
             }
         }
     }

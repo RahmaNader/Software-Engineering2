@@ -164,7 +164,8 @@ public class UserDriverDB {
         in = input.nextInt();
         input.nextLine();
         if (in == 1) registerUser();
-        else registerDriver();
+        else if(in == 2) registerDriver();
+        else System.out.println("Invalid Input\n=======================");
     }
 
     public Person loginDriver() {
@@ -235,23 +236,23 @@ public class UserDriverDB {
     }
 
     //driver to view all rating
-    public void viewAllRating(Person p) throws SQLException {
+    public static void viewAllRating(Person p) throws SQLException {
         setupDbConnection();
-        String sql = "SELECT * FROM RATING WHERE DRIVER = '"+p.getUserName ()+"';";
+        String sql = "SELECT * FROM RATING WHERE DRIVER = '"+p.getUserName()+"';";
         ResultSet rs = stmt.executeQuery ( sql );
-        System.out.println (rs.getDouble ( "rating" ) );
+        System.out.println (rs.getDouble ( "Rate" ) );
         rs.close ();
         closeConnection();
     }
 
     //user to view avg rating of driver
-    public void viewAvgRating(Person p) throws SQLException {
+    public static void viewAvgRating(Person p) throws SQLException {
         setupDbConnection();
         // query to get avg rating
         String sql = "(SELECT FROM RATING " +
                 "AVG(RATING) AS AVGRATING WHERE USERNAME = '"+p.getUserName()+"' GROUP BY AVGRATING);";
         ResultSet rs = stmt.executeQuery ( sql );
-        System.out.println (rs.getDouble ( "rating" ) );
+        System.out.println (rs.getDouble ( "Rate" ) );
         rs.close ();
         closeConnection();
     }
