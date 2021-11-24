@@ -1,4 +1,21 @@
-public class Person {
+public abstract class Person {
+    private String name;
+    private String userName;
+    private String mobileNum;
+    private String email;
+    private String password;
+
+    public Person(){}
+
+    public Person(String name, String userName, String mobileNum, String email, String password) {
+        this.name = name;
+        this.userName = userName;
+        this.mobileNum = mobileNum;
+        this.email = email;
+        this.password = password;
+    }
+
+    //setters and getters
     public String getName() {
         return name;
     }
@@ -6,29 +23,6 @@ public class Person {
     public void setName(String name) {
         this.name = name;
     }
-
-    private String name;
-    private String userName;
-    private String mobileNum;
-    private String email;
-    private String password;
-
-    public Person() {
-        userName = "null";
-    }
-
-    public Person(String userName, String name, String mobileNum, String password) {
-        this.userName = userName;
-        this.name = name;
-        this.mobileNum = mobileNum;
-        this.password = password;
-    }
-
-    public void login(String userName, String password) {
-
-    }
-
-    //setters and getters
     public String getUserName() {
         return userName;
     }
@@ -61,8 +55,4 @@ public class Person {
         this.password = password;
     }
 
-    //different signature with email
-    //    public void register(String userName, String mobileNum, String email, String password){
-//
-//    }
 }

@@ -9,18 +9,13 @@ public class Driver extends Person {
     public Driver() {
         favouriteAreas = new Vector<>();
     }
-
-    public void addArea(String area) {
-
+    public Driver(String name, String userName, String mobile, String email, String password, String nationalID, String driverLicense) {
+        super(name,userName,mobile,email,password);
+        this.nationalID = nationalID;
+        this.driverLicense = driverLicense;
+        favouriteAreas = new Vector<>();
     }
 
-    public void listRides() {
-
-    }
-
-    public void offerPrice() {
-
-    }
 
     public String getDriverLicense() {
         return driverLicense;
