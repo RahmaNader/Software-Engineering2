@@ -1,19 +1,16 @@
-import java.util.Vector;
-
 public class Driver extends Person {
     private String driverLicense;
+    
     private String nationalID;
+    
     private float avgRating;
-    private Vector<String> favouriteAreas;
-
-    public Driver() {
-        favouriteAreas = new Vector<>();
-    }
+    
+    public Driver() {}
+    
     public Driver(String name, String userName, String mobile, String email, String password, String nationalID, String driverLicense) {
         super(name,userName,mobile,email,password);
         this.nationalID = nationalID;
         this.driverLicense = driverLicense;
-        favouriteAreas = new Vector<>();
     }
 
 

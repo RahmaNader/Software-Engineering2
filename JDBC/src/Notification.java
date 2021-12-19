@@ -1,12 +1,9 @@
 import java.sql.*;
-import java.util.Scanner;
 
 public class Notification {
     private static Statement stmt;
     private static Statement stmt1;
     private static Connection connection;
-    private final static Scanner input = new Scanner(System.in);
-
     public void setUpNotification(){
         DBConnection.setupDbConnection("Notification");
         stmt = DBConnection.getStmt();

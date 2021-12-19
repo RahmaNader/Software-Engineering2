@@ -5,31 +5,47 @@ public class Main {
     private static Person logged;
     private static final Scanner input = new Scanner(System.in);
     private static Admin admin;
+    private static Database database;
 
     public static void userPanel() throws SQLException {
         int choice = 0;
+        int id = 0;
         while (choice != 7) {
             System.out.println("1- Request ride"+"\n"+"2- View requests"+"\n"+"3- Accept request"+
                     "\n"+"4- Cancel request"+"\n"+"5- Rate driver\n"+"6- View driver rate"+"\n"+"7- Exit");
             choice = input.nextInt();
             switch (choice) {
                 case 1:
-                    Request.requestRide(logged);
+                    System.out.println("Source: ");
+                    String source = input.nextLine();
+                    System.out.println("Destination: ");
+                    String destination = input.nextLine();
+                    Request.requestRide(logged, source, destination);
                     break;
                 case 2:
                     Request.viewRequests(logged);
                     break;
                 case 3:
-                    Request.acceptRequest();
+                    System.out.println("Please enter request id");
+                    id = input.nextInt();
+                    Request.acceptRequest(id);
                     break;
                 case 4:
-                    Request.cancelRequest(logged);
+                    System.out.println("Please enter request id");
+                    id = input.nextInt();
+                    Request.cancelRequest(logged,id);
                     break;
                 case 5:
-                    Rating.rateDriver(logged);
+                    System.out.print ("Enter the username: " );
+                    String username = input.nextLine ();
+                    System.out.print ("Enter the rating from 1 to 5 (1 worst, 5 best) :" );
+                    double newRate = input.nextDouble ();
+                    Rating.rateDriver(logged, username, newRate);
                     break;
                 case 6:
-                    Rating.viewAvgRating(logged);
+                    System.out.println("Enter driver user name");
+                    String in = input.nextLine();
+                    Rating.viewAvgRating(logged, in);
                     break;
                 case 7:
                     break;
@@ -42,6 +58,7 @@ public class Main {
 
     public static void driverPanel() throws SQLException {
         int choice = 0;
+        int id = 0;
         while (choice != 6) {
             System.out.println("1- View rides"+"\n"+"2- Make offer"+"\n"+"3- Add favourite place"+
                     "\n"+"4- View active requests in favourite places"+"\n"+"5- View all rating\n"+"6- Exit");
@@ -51,10 +68,17 @@ public class Main {
                     Rides.viewRides();
                     break;
                 case 2:
-                    Request.makeOffer(logged);
+                    System.out.println("Please enter ride id");
+                    id = input.nextInt();
+                    System.out.println("Enter a suitable price:");
+                    int price = input.nextInt();
+                    Request.makeOffer(logged,id, price);
                     break;
                 case 3:
-                    Locations.addFavourite(logged);
+                    System.out.println("Opened LOCATIONS successfully");
+                    System.out.println("Source: ");
+                    String in = input.nextLine();
+                    Locations.addFavourite(logged, in);
                     break;
                 case 4:
                     Locations.displayFavorite(logged);
@@ -118,19 +142,47 @@ public class Main {
     }
 
     public static void main(String[] args) throws SQLException {
-        Database myDatabase = new Database();
+        database = Database.getInstance();
+        database.start();
         Scanner input = new Scanner(System.in);
         int choice;
         while (true) {
             System.out.println("1- Register"+"\n"+"2- Login"+"\n"+"3- Exit");
             choice = input.nextInt();
+            //register
             if (choice == 1) {
-                Account.register();
+                int in;
+                System.out.println("1- Register as User"+"\n"+"2- Register as Driver");
+                in = input.nextInt();
+                input.nextLine();
+                System.out.println("UserName: ");
+                String userName = input.nextLine();
+                System.out.println("Name: ");
+                String name = input.nextLine();
+                System.out.println("Mobile number: ");
+                String mobile = input.nextLine();
+                System.out.println("Password: ");
+                String password = input.nextLine();
+                System.out.println("Email: (Keep it empty if you want it's optional) ");
+                String email = input.nextLine();
+                String natId = null;
+                String lic = null;
+                if(in == 2){
+                    //driver
+                    System.out.println("National ID: ");
+                    natId = input.nextLine();
+                    System.out.println("Driver License: ");
+                    lic = input.nextLine();
+                    Account.register(in, userName, name, mobile, password, email,natId ,lic);
+                }
+                else Account.register(in, userName, name, mobile, password, email,null ,null);
             }
+            //login
             else if (choice == 2) {
                 int choice2;
                 System.out.println("1- Login as User?"+"\n"+"2- Login as Driver?");
                 choice2 = input.nextInt();
+                //admin
                 if(choice2 == 3){
                     //admin code
                     String username = "" , password = "";
@@ -143,18 +195,30 @@ public class Main {
                     if(username.equals(admin.getUsername())&& password.equals(admin.getPassword())) adminPanel();
                     else System.out.println("Wrong Username or Password");
                 }
+                //user
                 else if(choice2 == 1) {
                     logged = new User();
-                    logged = Account.loginUser();
+                    String username, password;
+                    System.out.println("User name: ");
+                    username = input.nextLine();
+                    System.out.println("Password: ");
+                    password = input.nextLine();
+                    logged = Account.loginUser(username,password);
                     if (logged.getUserName()!=null) {
                         userPanel();
                     }else{
                         System.out.println("Wrong Username or Password or Your account is suspended");
                     }
                 }
+                //driver
                 else if(choice2 == 2){
                     logged = new Driver();
-                    logged = Account.loginDriver();
+                    String username, password;
+                    System.out.println("User name: ");
+                    username = input.nextLine();
+                    System.out.println("Password: ");
+                    password = input.nextLine();
+                    logged = Account.loginDriver(username, password);
                     if (logged.getUserName() != null) {
                         driverPanel();
                     }else{
@@ -163,6 +227,7 @@ public class Main {
                 }
             }
             else if (choice == 3){
+                input.close();
                 System.exit(0);
             }
             else{

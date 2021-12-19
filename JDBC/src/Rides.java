@@ -2,16 +2,21 @@ import java.sql.*;
 
 public class Rides {
     private String source;
+    
     private String destination;
+    
     private String user;
+    
     private String driver;
-    private static int ID;
-    private static RideStatus s;
+    
+    private int ID;
+    
     private static Statement stmt;
 
     public static void viewRides(){
         DBConnection.setupDbConnection("Rides");
         stmt = DBConnection.getStmt();
+        //data base
         try {
             System.out.println("Opened rides successfully");
             ResultSet rs = stmt.executeQuery("SELECT * FROM RIDES WHERE STATUS != 'A' OR STATUS !='D';");
@@ -30,7 +35,7 @@ public class Rides {
     }
 
     public Rides() {
-        s = RideStatus.Pending;
+       
     }
 
     public Rides(String source, String destination, String user,int ID) {
@@ -38,7 +43,6 @@ public class Rides {
         this.destination = destination;
         this.user = user;
         this.ID = ID;
-        s = RideStatus.Pending;
     }
 
     public String getSource() {

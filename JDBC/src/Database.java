@@ -2,6 +2,7 @@ import java.sql.Statement;
 
 public class Database {
     private static Statement stmt;
+    private static Database databaseInstance;
 
     private static void createRideDB(){
         try{
@@ -103,7 +104,19 @@ public class Database {
         }
 
     }
-    public Database(){
+
+    private Database(){
+        
+    }
+
+    public static Database getInstance(){
+        if(databaseInstance == null){
+            databaseInstance = new Database();
+        }
+        return databaseInstance;
+    }
+
+    public void start(){
         DBConnection.setupDbConnection("Database");
         stmt = DBConnection.getStmt();
         createUserDB();

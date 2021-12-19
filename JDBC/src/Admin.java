@@ -1,14 +1,12 @@
-import java.sql.*;
-
 public class Admin {
-    private static Admin adminInstance;
-    private static Statement stmt;
-    //admin username and password
+
+    public static Admin adminInstance;
+    static IDBAdmin dbadmin = new DBAdmin();
     String username = "admin";
     String password = "admin";
 
     private Admin(){
-        //private admin constructor
+        //admin
     }
 
     public String getUsername() {
@@ -22,99 +20,36 @@ public class Admin {
     public static Admin getInstance(){
         if(adminInstance == null){
             adminInstance = new Admin();
-            DBConnection.setupDbConnection("Admin");
-            stmt = DBConnection.getStmt();
         }
         return adminInstance;
     }
 
     public void listAllDriverRequests(){
-        DBConnection.setupDbConnection("Admin");
-        stmt = DBConnection.getStmt();
-        try {
-            ResultSet rs = stmt.executeQuery("SELECT * FROM DRIVER WHERE STATUS = 'P';");
-            while (rs.next()) {
-                Print.driverData(rs);
-            }
-            rs.close();
-            DBConnection.closeConnection();
-        }catch (Exception e) {
-            e.printStackTrace();
-        }
+        dbadmin.listAllDriverRequests();
     }
 
     public void listAllDrivers(){
-        DBConnection.setupDbConnection("Admin");
-        stmt = DBConnection.getStmt();
-        try {
-            ResultSet rs = stmt.executeQuery("SELECT * FROM DRIVER;");
-            while (rs.next()){
-                Print.driverData(rs);
-            }
-            rs.close();
-            DBConnection.closeConnection();
-        }catch (Exception e) {
-            e.printStackTrace();
-        }
+        dbadmin.listAllDrivers();
     }
 
     public void listAllUsers(){
-        DBConnection.setupDbConnection("Admin");
-        stmt = DBConnection.getStmt();
-        try {
-            ResultSet rs = stmt.executeQuery("SELECT * FROM USER;");
-            while (rs.next()) {
-                Print.userData(rs);
-            }
-            rs.close();
-            DBConnection.closeConnection();
-        }catch (Exception e) {
-            e.printStackTrace();
-        }
+        dbadmin.listAllUsers();
     }
 
     public void suspendDriver(String userName){
-        DBConnection.setupDbConnection("Admin");
-        stmt = DBConnection.getStmt();
-        try {
-            stmt.executeUpdate("UPDATE DRIVER SET STATUS = 'S' WHERE USERNAME = "+"'"+userName+"'");
-            DBConnection.closeConnection();
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
+        dbadmin.suspendDriver(userName);
     }
 
     public void suspendUser(String userName){
-        DBConnection.setupDbConnection("Admin");
-        stmt = DBConnection.getStmt();
-        try{
-            stmt.executeUpdate("UPDATE USER SET STATUS = 'S' WHERE USERNAME = "+"'"+userName+"'");
-            DBConnection.closeConnection();
-        }catch (Exception e){
-            e.printStackTrace();
-        }
+        dbadmin.suspendUser(userName);
     }
 
     public void activateDriver(String userName){
-        DBConnection.setupDbConnection("Admin");
-        stmt = DBConnection.getStmt();
-        try{
-            stmt.executeUpdate("UPDATE Driver SET STATUS = 'A' WHERE USERNAME = "+"'"+userName+"'");
-            DBConnection.closeConnection();
-        }catch (Exception e){
-            e.printStackTrace();
-        }
+        dbadmin.activateDriver(userName);
     }
 
     public void activateUser(String userName){
-        DBConnection.setupDbConnection("Admin");
-        stmt = DBConnection.getStmt();
-        try{
-            stmt.executeUpdate("UPDATE USER SET STATUS = 'A' WHERE USERNAME = "+"'"+userName+"'");
-            DBConnection.closeConnection();
-        }catch (Exception e){
-            e.printStackTrace();
-        }
+        dbadmin.activateUser(userName);
     }
 
 }
