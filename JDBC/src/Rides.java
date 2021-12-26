@@ -45,6 +45,27 @@ public class Rides {
         this.ID = ID;
     }
 
+    public static Rides getRideByID (int id) throws SQLException {
+        DBConnection.setupDbConnection("Rides");
+        stmt = DBConnection.getStmt();
+
+        ResultSet res = stmt.executeQuery ( "SELECT * FROM RIDES WHERE ID = '"+id+"';");
+        Rides ride = new Rides (  );
+        ride.source = res.getString ( "source" );
+        ride.destination = res.getString ( "destination" );
+        ride.driver = res.getString ( "driver" );
+        ride.user = res.getString ( "user" );
+        ride.ID = res.getInt ( "id" );
+
+        try {
+            res.close();
+        } catch (SQLException e) {
+            e.printStackTrace ( );
+        }
+        DBConnection.closeConnection();
+        return ride;
+    }
+
     public String getSource() {
         return source;
     }

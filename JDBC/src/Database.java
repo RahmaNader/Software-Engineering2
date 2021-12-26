@@ -1,3 +1,4 @@
+import java.sql.SQLException;
 import java.sql.Statement;
 
 public class Database {
@@ -105,6 +106,30 @@ public class Database {
 
     }
 
+    private static void createEventDB ( ) {
+
+        try {
+            String sql =
+                    "CREATE TABLE IF NOT EXISTS EVENT" +
+                            "(ID        INTEGER    PRIMARY KEY      AUTOINCREMENT," +
+                            "RIDEID INTEGER NOT NULL," +
+                            "EVENTNAME    CHAR(50) NOT NULL UNIQUE," +
+                            "DRIVER  CHAR (50) NOT NULL," +
+                            "USER    CHAR (50) NOT NULL," +
+                            "TIME    CHAR (50) NOT NULL," +
+                            "PRICE   DOUBLE NOT NULL," +
+                            "FOREIGN KEY (RIDEID) REFERENCES RIDES (ID));";
+            stmt.executeUpdate ( sql );
+        }
+        catch (SQLException e) {
+            e.printStackTrace ( );
+        }
+        System.out.println("Opened Events successfully");
+
+
+    }
+
+
     private Database(){
         
     }
@@ -125,6 +150,9 @@ public class Database {
         createLocationsDB();
         createRatingDB();
         createNotificationDB();
+        createEventDB();
     }
+
+
 
 }
