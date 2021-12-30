@@ -3,7 +3,7 @@ import java.util.Date;
 
 public interface IDiscounts
 {
-    double getAllDiscounts ( Date date, int id, String username) throws SQLException; // take date and ride id, and check all discounts on this date
+    double getAllDiscounts ( Date date, Rides ride, String username) throws SQLException; // take date and ride id, and check all discounts on this date
 
     void addDiscountByDate (Date date , double discount); // to add new discount by date
 

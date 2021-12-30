@@ -1,3 +1,5 @@
+import java.util.Date;
+
 public class Admin {
 
     public static Admin adminInstance;
@@ -50,6 +52,36 @@ public class Admin {
 
     public void activateUser(String userName){
         dbadmin.activateUser(userName);
+    }
+
+    void displayEvent ( )
+    {
+        dbadmin.displayEvent ();
+    }
+
+    void displayEventByEventName (EventName eventName)
+    {
+        dbadmin.displayEventByEventName ( eventName );
+    }
+
+    void displayEventByDate ( Date date)
+    {
+        dbadmin.displayEventByDate ( date );
+    }
+
+    void displayEventByUser (String user)
+    {
+        dbadmin.displayEventByUser ( user );
+    }
+
+    void displayEventByDriver (String driver)
+    {
+        dbadmin.displayEventByDriver ( driver );
+    }
+
+    void displayEventByRideID (int id)
+    {
+        dbadmin.displayEventByRideID ( id );
     }
 
 }

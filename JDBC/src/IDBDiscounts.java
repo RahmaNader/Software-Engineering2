@@ -4,7 +4,7 @@ import java.util.Date;
 public interface IDBDiscounts
 {
 
-    Double getAllDiscounts ( Date date, int id ) throws SQLException;
+    Double getAllDiscounts ( Date date, Rides ride ) throws SQLException;
 
     void addDiscountByDate ( Date date , double discount);
 

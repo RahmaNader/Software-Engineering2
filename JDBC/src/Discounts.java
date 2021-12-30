@@ -16,12 +16,12 @@ public class Discounts implements IDiscounts
     IDBAccount IDBaccounts; // to check if first ride (by 2 databases)
     static IDBRequest IDBrequests = new DBRequest (); // to check numOfPassengers
 
-    public double getAllDiscounts ( Date date, int id, String username) throws SQLException {
+    public double getAllDiscounts ( Date date, Rides ride, String username) throws SQLException {
         // when take it from request database -> send current date, ride id , username of user
-        discounts = IDBdiscounts.getAllDiscounts (date, id);
+        discounts = IDBdiscounts.getAllDiscounts (date, ride );
         if (IDBaccounts.checkBD ( date , username )) discounts += 10;
-        if (IDBrequests.checkFirstRide(id) ) discounts += 10;
-        if (IDBrequests.checkNumOfPassengers(id, date) == 2) discounts +=5;
+        if (IDBrequests.checkFirstRide( ride.getID ( ) ) ) discounts += 10;
+        if (ride.getNumOfPassengers () == 2) discounts +=5;
 
         return discounts;
 

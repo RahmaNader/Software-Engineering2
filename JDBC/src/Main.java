@@ -1,4 +1,5 @@
 import java.sql.SQLException;
+import java.time.Instant;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.Date;
@@ -106,7 +107,8 @@ public class Main {
         String userName;
         while(choice != 8) {
             System.out.println("1-List All Drivers Requests\n2-List All Drivers\n3-List All Users\n4-Suspend Driver\n" +
-                    "5-Suspend User\n6-Activate Driver\n7-Activate User\n8-Back");
+                    "5-Suspend User\n6-Activate Driver\n7-Activate User\n8-display All Events\n9-display Event by date\n10-display Event by ride id" +
+                    "\n11-display event by username\n12-display event by driver's username\n13-display event by Event Name\n14-Back");
             choice = input.nextInt();
             switch (choice) {
                 case 1:
@@ -139,6 +141,40 @@ public class Main {
                     admin.activateUser(userName);
                     break;
                 case 8:
+                    System.out.println ("Display All Events" );
+                    admin.displayEvent ();
+                    break;
+                case 9:
+                    System.out.println ("Display Event by date" );
+                    System.out.println ("Enter the date in the following format: (YYYY/MM/DD)" );
+                    String date = input.nextLine ();
+                    admin.displayEventByDate ( (Date.from ( Instant.parse ( date ) ) ));
+                    break;
+                case 10:
+                    System.out.println ("Display Event by ride id" );
+                    System.out.println ("Enter the ride ID:" );
+                    int id = input.nextInt ();
+                    admin.displayEventByRideID ( id);
+                    break;
+                case 11:
+                    System.out.println ("Display Event by user's username" );
+                    System.out.println ("Enter the username" );
+                    String user = input.nextLine ();
+                    admin.displayEventByUser ( user );
+                    break;
+                case 12:
+                    System.out.println ("Display Event by driver's username" );
+                    System.out.println ("Enter the username" );
+                    String driver = input.nextLine ();
+                    admin.displayEventByDriver ( driver);
+                    break;
+                case 13:
+                    System.out.println ("Display Event by Event Name" );
+                    System.out.println ("Enter the event name" );
+                    EventName eventName = EventName.valueOf ( input.nextLine () );
+                    admin.displayEventByEventName ( eventName);
+                    break;
+                case 14:
                     break;
                 default:
                     System.out.println("Undefined");
@@ -207,6 +243,7 @@ public class Main {
                 else if(choice2 == 1) {
                     logged = new User();
                     System.out.println("User name: ");
+                    input.nextLine ();
                     String username = input.nextLine ();
                     System.out.println("Password: ");
                     String password = input.nextLine ();
@@ -221,6 +258,7 @@ public class Main {
                 else if(choice2 == 2){
                     logged = new Driver();
                     System.out.println("User name: ");
+                    input.nextLine ();
                     String username = input.nextLine();
                     System.out.println("Password: ");
                     String password = input.nextLine();

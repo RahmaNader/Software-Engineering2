@@ -37,7 +37,7 @@ public class Database {
                             "STATUS      TEXT CHECK( STATUS IN ('S','A') )   NOT NULL DEFAULT 'A',"+
                             "EMAIL      CHAR(30) DEFAULT 'null' ,"+
                             "PASSWORD        CHAR(30)     NOT NULL,"+
-                            "BIRTHDATE      CHAR(30)      NOT NULL);";
+                            "BIRTHDATE      DATE      NOT NULL);";
             stmt.executeUpdate(sql);
             System.out.println("Opened users successfully");
         } catch (Exception e) {
@@ -119,7 +119,7 @@ public class Database {
                             "EVENTNAME    CHAR(50) NOT NULL UNIQUE," +
                             "DRIVER  CHAR (50) NOT NULL," +
                             "USER    CHAR (50) NOT NULL," +
-                            "TIME    CHAR (50) NOT NULL," +
+                            "TIME    DATE NOT NULL," +
                             "PRICE   DOUBLE NOT NULL," +
                             "FOREIGN KEY (RIDEID) REFERENCES RIDES (ID));";
             stmt.executeUpdate ( sql );
