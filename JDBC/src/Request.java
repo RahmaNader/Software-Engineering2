@@ -8,6 +8,7 @@ public class Request {
 
     static IDBRequest dbrequest = new DBRequest();
 
+
     static IEvent iEvent ;
 
     public static void requestRide( Person p, String source, String destination, LocalDate date, int numOfPassengers) {
@@ -26,6 +27,7 @@ public class Request {
             e.printStackTrace ( );
         }
     }
+
 
     public static void cancelRequest(Person P, int id){
         dbrequest.cancelRequest(P, id);

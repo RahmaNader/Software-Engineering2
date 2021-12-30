@@ -21,7 +21,7 @@ public class Discounts implements IDiscounts
         discounts = IDBdiscounts.getAllDiscounts (date, ride );
         if (IDBaccounts.checkBD ( date , username )) discounts += 10;
         if (IDBrequests.checkFirstRide( ride.getID ( ) ) ) discounts += 10;
-        if (ride.getNumOfPassengers () == 2) discounts +=5;
+        if (IDBrequests.checkNumOfPassengers ( ride.getID ( ) , date ) == 2) discounts +=5;
 
         return discounts;
 

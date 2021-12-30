@@ -1,4 +1,5 @@
 import java.sql.SQLException;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 
 enum EventName
@@ -20,12 +21,24 @@ public class Event implements IEvent
     static IDBEvent dbevent = new DBEvent ();
 
 
-    private LocalDateTime time;
+    private LocalDate time;
     private String userName, captainName;
     private EventName eventName = EventName.noEvent;
     private int rideId;
     private double price;
 
+    public Event ()
+    {}
+
+    public Event (int rideId, String userName, String captainName, double price ,LocalDate time, EventName eventName)
+    {
+        this.price = price;
+        this.captainName = captainName;
+        this.time = time;
+        this.userName = userName;
+        this.rideId = rideId;
+        this.eventName = eventName;
+    }
 
     public void sendUserAccepts ( int id ) throws SQLException {
 //        addUserAccept ( id );
@@ -35,7 +48,7 @@ public class Event implements IEvent
         this.captainName = ride.getDriver ();
         this.eventName = event.eventName = EventName.UserAccept;
         this.userName = event.userName = ride.getUser () ; // to get the username from the table ride
-        this.time = event.time =  LocalDateTime.now (); ;
+        this.time = event.time =  LocalDate.now (); ;
         dbevent.addEvent ( event );
 
     }
@@ -47,7 +60,7 @@ public class Event implements IEvent
         this.captainName = ride.getDriver ();
         this.eventName = event.eventName = EventName.capArrivesDest;
         this.userName = event.userName = ride.getUser () ; // to get the username from the table ride
-        this.time = event.time =  LocalDateTime.now (); ;
+        this.time = event.time =  LocalDate.now (); ;
         dbevent.addEvent ( event );
 
     }
@@ -59,7 +72,7 @@ public class Event implements IEvent
         this.captainName = ride.getDriver ();
         this.eventName = event.eventName = EventName.capArrivesLoc;
         this.userName = event.userName = ride.getUser () ; // to get the username from the table ride
-        this.time = event.time =  LocalDateTime.now (); ;
+        this.time = event.time =  LocalDate.now (); ;
         dbevent.addEvent ( event );
     }
 
@@ -71,7 +84,7 @@ public class Event implements IEvent
         this.captainName = p.getUserName ();
         this.eventName = event.eventName = EventName.captainOffer;
         this.userName = event.userName = ride.getUser () ; // to get the username from the table ride
-        this.time = event.time =  LocalDateTime.now (); ;
+        this.time = event.time =  LocalDate.now (); ;
         dbevent.addEvent ( event );
     }
 
@@ -93,7 +106,7 @@ public class Event implements IEvent
         return captainName;
     }
 
-    public LocalDateTime getTime ( ) {
+    public LocalDate getTime ( ) {
         return time;
     }
 
