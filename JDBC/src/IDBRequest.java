@@ -1,9 +1,9 @@
 import java.sql.SQLException;
-import java.time.LocalDateTime;
+import java.time.LocalDate;
 import java.util.Date;
 
 public interface IDBRequest {
-    public void requestRide( Person p,String source, String destination, LocalDateTime date,  int numOfPassengers);
+    public void requestRide( Person p,String source, String destination, LocalDate date,  int numOfPassengers);
     public void viewRequests(Person p);
     public void acceptRequest(int id);
     public void cancelRequest(Person P, int id);

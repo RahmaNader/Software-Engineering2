@@ -1,13 +1,14 @@
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.Date;
 
 public class DBRequest implements IDBRequest{
     private static Statement stmt;
 
-    public void requestRide( Person p, String source, String destination, LocalDateTime date, int numOfPassengers ){
+    public void requestRide( Person p, String source, String destination, LocalDate date, int numOfPassengers ){
         Notification notification = new Notification();
         DBConnection.setupDbConnection("DBRequest");
         stmt = DBConnection.getStmt();

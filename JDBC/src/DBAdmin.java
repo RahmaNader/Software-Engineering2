@@ -65,7 +65,7 @@ public class DBAdmin implements IDBAdmin{
         DBConnection.setupDbConnection("DBAdmin");
         stmt = DBConnection.getStmt();
         try{
-            stmt.executeUpdate("UPDATE USER SET STATUS = 'S' WHERE USERNAME = "+"'"+userName+"'");
+            stmt.executeUpdate("UPDATE USER SET STATUS = 'S' WHERE main.USER.USER_NAME = "+"'"+userName+"'");
             DBConnection.closeConnection();
         }catch (Exception e){
             e.printStackTrace();
@@ -87,7 +87,7 @@ public class DBAdmin implements IDBAdmin{
         DBConnection.setupDbConnection("DBAdmin");
         stmt = DBConnection.getStmt();
         try{
-            stmt.executeUpdate("UPDATE USER SET STATUS = 'A' WHERE USERNAME = "+"'"+userName+"'");
+            stmt.executeUpdate("UPDATE USER SET STATUS = 'A' WHERE main.USER.USER_NAME = "+"'"+userName+"'");
             DBConnection.closeConnection();
         }catch (Exception e){
             e.printStackTrace();

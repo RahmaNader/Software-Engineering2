@@ -19,7 +19,7 @@ public class Database {
                             "Date         Date   NOT NULL," +
                             "NUMOFPASSENGERS   INTEGER   NOT NULL,"+
                             "FOREIGN KEY (DRIVER) REFERENCES DRIVER (USERNAME),"+
-                            "FOREIGN KEY (USER) REFERENCES USER (USERNAME));";
+                            "FOREIGN KEY (USER) REFERENCES USER (USER_NAME));";
             stmt.executeUpdate(sql);
             System.out.println("Opened Rides successfully");
         } catch (Exception e) {
@@ -84,7 +84,7 @@ public class Database {
                             "RATE DOUBLE NOT NULL DEFAULT 0," +
                             "USER    CHAR(50)  NOT NULL," +
                             "DRIVER CHAR(50) NOT NULL," +
-                            "FOREIGN KEY (USER) REFERENCES USER (USERNAME)," +
+                            "FOREIGN KEY (USER) REFERENCES USER (USER_NAME)," +
                             "FOREIGN KEY (DRIVER) REFERENCES DRIVER (USERNAME) );";
             stmt.executeUpdate(sql);
             System.out.println("Opened rating successfully");

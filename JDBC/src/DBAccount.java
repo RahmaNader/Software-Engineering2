@@ -12,7 +12,7 @@ public class DBAccount implements IDBAccount{
         DBConnection.setupDbConnection("DBAccount");
         stmt = DBConnection.getStmt();
         try{
-            String sql = "INSERT INTO USER (USERNAME,NAME,MOBILE,PASSWORD,EMAIL, BIRTHDATE) " +
+            String sql = "INSERT INTO USER (USER_NAME,NAME,MOBILE,PASSWORD,EMAIL, BIRTHDATE) " +
                     "VALUES (" + "'" + user.getUserName() + "'" + "," +
                     "'" + user.getName() + "'" + "," +
                     "'" + user.getMobileNum() + "'" + "," +
@@ -77,7 +77,7 @@ public class DBAccount implements IDBAccount{
     public User loginUser(String username, String password){
         User p  = new User();
         try {
-            ResultSet rs = stmt.executeQuery("SELECT * FROM USER WHERE USERNAME = '"+username+"'  " +
+            ResultSet rs = stmt.executeQuery("SELECT * FROM USER WHERE USER_NAME = '"+username+"'  " +
                     "AND PASSWORD = '"+password+"' AND STATUS = 'A';");
             while (rs.next()) {
                 System.out.println();

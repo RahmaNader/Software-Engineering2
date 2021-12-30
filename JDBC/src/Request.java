@@ -1,4 +1,5 @@
 import java.sql.SQLException;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.Date;
 
@@ -9,7 +10,7 @@ public class Request {
 
     static IEvent iEvent ;
 
-    public static void requestRide( Person p, String source, String destination, LocalDateTime date, int numOfPassengers) {
+    public static void requestRide( Person p, String source, String destination, LocalDate date, int numOfPassengers) {
         dbrequest.requestRide(p, source, destination, date , numOfPassengers);
     }
 
