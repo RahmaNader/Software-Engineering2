@@ -15,7 +15,9 @@ public class Database {
                             "STATUS      TEXT CHECK( STATUS IN ('A','D','P') )  NOT NULL DEFAULT 'P',"+
                             "PRICE            FLOAT(2)     DEFAULT 0,"+
                             "DRIVER            CHAR(50)     ,"+
-                            "USER            CHAR(50)     NOT NULL ,"+
+                            "USER            CHAR(50)     NOT NULL ," +
+                            "Date         Date   NOT NULL," +
+                            "NUMOFPASSENGERS   INTEGER   NOT NULL,"+
                             "FOREIGN KEY (DRIVER) REFERENCES DRIVER (USERNAME),"+
                             "FOREIGN KEY (USER) REFERENCES USER (USERNAME));";
             stmt.executeUpdate(sql);
@@ -34,7 +36,8 @@ public class Database {
                             "MOBILE            CHAR(20)     NOT NULL,"+
                             "STATUS      TEXT CHECK( STATUS IN ('S','A') )   NOT NULL DEFAULT 'A',"+
                             "EMAIL      CHAR(30) DEFAULT 'null' ,"+
-                            "PASSWORD        CHAR(30)     NOT NULL);";
+                            "PASSWORD        CHAR(30)     NOT NULL,"+
+                            "BIRTHDATE      CHAR(30)      NOT NULL);";
             stmt.executeUpdate(sql);
             System.out.println("Opened users successfully");
         } catch (Exception e) {
@@ -129,6 +132,23 @@ public class Database {
 
     }
 
+    private static void createDiscountsDB (){
+        String sql = "CREATE TABLE IF NOT EXISTS DISCOUNTS" +
+                     "(TIMES  DATE  NOT NULL," +
+                        "AREA  CHAR(50) NOT NULL," +
+                            "DISCOUNT  DOUBLE NOT NULL " +
+                        ");";
+
+        try {
+            stmt.executeUpdate ( sql );
+        } catch (SQLException e) {
+            e.printStackTrace ( );
+        }
+
+        System.out.println ("Opened Discounts successfully!" );
+
+    }
+
 
     private Database(){
         
@@ -151,6 +171,7 @@ public class Database {
         createRatingDB();
         createNotificationDB();
         createEventDB();
+        createDiscountsDB ();
     }
 
 

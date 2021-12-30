@@ -1,10 +1,13 @@
 import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.sql.Statement;
+import java.time.LocalDateTime;
+import java.util.Date;
 
 public class DBRequest implements IDBRequest{
     private static Statement stmt;
 
-    public void requestRide(Person p, String source, String destination){
+    public void requestRide( Person p, String source, String destination, LocalDateTime date, int numOfPassengers ){
         Notification notification = new Notification();
         DBConnection.setupDbConnection("DBRequest");
         stmt = DBConnection.getStmt();
@@ -14,8 +17,9 @@ public class DBRequest implements IDBRequest{
             ride.setSource(source);
             ride.setDestination(destination);
             ride.setUser(p.getUserName());
-            String sql = "INSERT INTO RIDES (SOURCE,DESTINATION,USER) " +
-                    "VALUES ("+ "'" + ride.getSource() + "'" + "," + "'" + ride.getDestination() + "'" + "," + "'" + p.getUserName() + "'" + ");";
+            String sql = "INSERT INTO RIDES (SOURCE,DESTINATION,USER,DATE, NUMOFPASSENGERS) " +
+                    "VALUES ("+ "'" + ride.getSource() + "'" + "," + "'" + ride.getDestination() + "'" + "," + "'" + p.getUserName() + "'"
+                    + "," + "'" + ride.getDate ()  + "'" + "," + "'" + ride.getNumOfPassengers ()  + "'"  + ");";
             stmt.executeUpdate(sql);
             DBConnection.closeConnection();
             notification.setUpNotification();
@@ -90,6 +94,8 @@ public class DBRequest implements IDBRequest{
                 System.out.println("ID = " + rs.getString("id"));
                 System.out.println("SOURCE = "+rs.getString("source"));
                 System.out.println("DESTINATION = "+rs.getString("destination"));
+                System.out.println ("DATE = "+rs.getDate ( "date" ) );
+                System.out.println ("NUMOFPASSENGERS = " + rs.getInt ( "numofpassengers" ) );
             }
             String sql = "UPDATE RIDES set PRICE = "+price+" WHERE ID ="+id+";";
             stmt.executeUpdate(sql);
@@ -101,4 +107,40 @@ public class DBRequest implements IDBRequest{
             System.err.println(e.getClass().getName() + ": " + e.getMessage());
         }
     }
+
+    public int checkNumOfPassengers (int id , Date date)
+    {
+        int num = 1;
+        DBConnection.setupDbConnection("DBRequest");
+        stmt = DBConnection.getStmt();
+        try {
+            ResultSet rs = stmt.executeQuery ( "SELECT * FROM RIDES WHERE ID=" + id + " AND DATE="+ date + ";" );
+            num = rs.getInt ( "numofpassengers" );
+            rs.close ();
+            DBConnection.closeConnection ();
+        } catch (SQLException e) {
+            e.printStackTrace ( );
+        }
+        return num;
+    }
+
+    public boolean checkFirstRide (int id) throws SQLException {
+        DBConnection.setupDbConnection("DBRequest");
+        stmt = DBConnection.getStmt();
+        ResultSet rs = null;
+        try {
+            rs = stmt.executeQuery ( "SELECT USER FROM RIDES WHERE ID = "+id +";" );
+        } catch (SQLException e) {
+            e.printStackTrace ( );
+        }
+        rs.close ();
+        String userName = rs.getString ( "USER" );
+        ResultSet res = stmt.executeQuery ( "SELECT COUNT(ID) AS CNT FROM RIDES HAVING USER = "+"'"+ userName +"'"+";" );
+        int cnt = res.getInt ( "CNT" );
+        res.close ();
+        return cnt < 1;
+    }
+
+
+
 }

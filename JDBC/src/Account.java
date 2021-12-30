@@ -2,10 +2,10 @@ public class Account {
     
     static IDBAccount dbaccount = new DBAccount();
 
-    public static void register(int in,String userName,String name,String mobile,String password,String email ,String natId ,String lic) {
+    public static void register(int in,String userName,String name,String mobile,String password,String email, String birthDate ,String natId ,String lic) {
         if(email.isBlank()) email = "null";
         if (in == 1){
-            User user = new User(name, userName, mobile, email, password);
+            User user = new User(name, userName, mobile, email,birthDate, password);
             dbaccount.registerUser(user);
         } else if(in == 2){
             Driver driver = new Driver(name, userName, mobile, email, password, natId, lic);

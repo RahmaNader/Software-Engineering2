@@ -1,9 +1,11 @@
 public class User extends Person {
     private double balance;
+    private String birthDate;
 
     public User(){}
-    public User(String name, String userName, String mobile, String email, String password) {
+    public User(String name, String userName, String mobile, String email,String birthDate, String password) {
         super(name,userName,mobile,email,password);
+        this.birthDate = birthDate;
     }
 
     public double getBalance() {
@@ -14,5 +16,11 @@ public class User extends Person {
     }
 
 
+    public String getBirthDate ( ) {
+        return birthDate;
+    }
 
+    public void setBirthDate ( String birthDate ) {
+        this.birthDate = birthDate;
+    }
 }

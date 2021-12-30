@@ -1,3 +1,5 @@
+import org.sqlite.core.DB;
+import java.sql.Date;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
@@ -10,18 +12,46 @@ public class DBAccount implements IDBAccount{
         DBConnection.setupDbConnection("DBAccount");
         stmt = DBConnection.getStmt();
         try{
-            String sql = "INSERT INTO USER (USERNAME,NAME,MOBILE,PASSWORD,EMAIL) " +
+            String sql = "INSERT INTO USER (USERNAME,NAME,MOBILE,PASSWORD,EMAIL, BIRTHDATE) " +
                     "VALUES (" + "'" + user.getUserName() + "'" + "," +
                     "'" + user.getName() + "'" + "," +
                     "'" + user.getMobileNum() + "'" + "," +
                     "'" + user.getPassword() + "'" + "," +
-                    "'" + user.getEmail() + "'" + ");";
+                    "'" + user.getEmail() + "'" +  "," +
+                    "'" + user.getBirthDate ()+"'" + ");";
             stmt.execute(sql);
             DBConnection.closeConnection();
             System.out.println("User created successfully");
         } catch (SQLException e) {
             e.printStackTrace();
         }
+    }
+
+    public boolean checkBD ( java.util.Date date, String username)
+    {
+
+        DBConnection.setupDbConnection("DBAccount");
+        stmt = DBConnection.getStmt();
+        ResultSet rs = null;
+        try {
+            rs = stmt.executeQuery ( "SELECT BIRTHDATE FROM USER WHERE USER_NAME = "+"'"+username+"'"+";" );
+        } catch (SQLException e) {
+            e.printStackTrace ( );
+        }
+        Date birthDate = null;
+        try {
+            birthDate = rs.getDate ( "birthdate" );
+        } catch (SQLException e) {
+            e.printStackTrace ( );
+        }
+        try {
+            rs.close ();
+        } catch (SQLException e) {
+            e.printStackTrace ( );
+        }
+        DBConnection.closeConnection ();
+        return birthDate == date;
+
     }
 
     public void registerDriver(Driver driver){

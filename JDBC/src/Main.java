@@ -1,4 +1,6 @@
 import java.sql.SQLException;
+import java.time.LocalDateTime;
+import java.util.Date;
 import java.util.Scanner;
 
 public class Main {
@@ -20,7 +22,10 @@ public class Main {
                     String source = input.nextLine();
                     System.out.println("Destination: ");
                     String destination = input.nextLine();
-                    Request.requestRide(logged, source, destination);
+                    System.out.println ("No. Of Passengers: " );
+                    int numOfPassengers = input.nextInt ();
+                    LocalDateTime date = LocalDateTime.now ();
+                    Request.requestRide(logged, source, destination, date, numOfPassengers);
                     break;
                 case 2:
                     Request.viewRequests(logged);
@@ -165,6 +170,8 @@ public class Main {
                 String password = input.nextLine();
                 System.out.println("Email: (Keep it empty if you want it's optional) ");
                 String email = input.nextLine();
+                System.out.println ("Birthdate: (in this format:DD/MM/YYYY) ");
+                String birthDate = input.nextLine ( );
                 String natId = null;
                 String lic = null;
                 if(in == 2){
@@ -173,9 +180,9 @@ public class Main {
                     natId = input.nextLine();
                     System.out.println("Driver License: ");
                     lic = input.nextLine();
-                    Account.register(in, userName, name, mobile, password, email,natId ,lic);
+                    Account.register(in, userName, name, mobile, password, email,null,natId ,lic);
                 }
-                else Account.register(in, userName, name, mobile, password, email,null ,null);
+                else Account.register(in, userName, name, mobile, password, email,birthDate ,null, null);
             }
             //login
             else if (choice == 2) {
