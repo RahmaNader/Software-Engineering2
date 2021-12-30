@@ -1,5 +1,4 @@
 import java.sql.SQLException;
-import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.Date;
 import java.util.Scanner;
@@ -25,7 +24,7 @@ public class Main {
                     String destination = input.nextLine();
                     System.out.println ("No. Of Passengers: " );
                     int numOfPassengers = input.nextInt ();
-                    LocalDate date = LocalDate.now ();
+                    LocalDateTime date = LocalDateTime.now ();
                     Request.requestRide(logged, source, destination, date, numOfPassengers);
                     break;
                 case 2:
@@ -171,7 +170,7 @@ public class Main {
                 String password = input.nextLine();
                 System.out.println("Email: (Keep it empty if you want it's optional) ");
                 String email = input.nextLine();
-                System.out.println ("Birthdate: (in this format:YYYY/MM/DD) ");
+                System.out.println ("Birthdate: (in this format:DD/MM/YYYY) ");
                 String birthDate = input.nextLine ( );
                 String natId = null;
                 String lic = null;
@@ -206,10 +205,13 @@ public class Main {
                 //user
                 else if(choice2 == 1) {
                     logged = new User();
-                    System.out.println("User name: ");
-                    String username = input.nextLine ();
-                    System.out.println("Password: ");
-                    String password = input.nextLine ();
+                    String username, password;
+                    //here an edit
+                    input.nextLine();
+                    System.out.print("User name: ");
+                    username = input.nextLine();
+                    System.out.print("Password: ");
+                    password = input.nextLine();
                     logged = Account.loginUser(username,password);
                     if (logged.getUserName()!=null) {
                         userPanel();
@@ -220,10 +222,13 @@ public class Main {
                 //driver
                 else if(choice2 == 2){
                     logged = new Driver();
-                    System.out.println("User name: ");
-                    String username = input.nextLine();
-                    System.out.println("Password: ");
-                    String password = input.nextLine();
+                    String username, password;
+                    //here an edit
+                    input.nextLine();
+                    System.out.print("User name: ");
+                    username = input.nextLine();
+                    System.out.print("Password: ");
+                    password = input.nextLine();
                     logged = Account.loginDriver(username, password);
                     if (logged.getUserName() != null) {
                         driverPanel();
