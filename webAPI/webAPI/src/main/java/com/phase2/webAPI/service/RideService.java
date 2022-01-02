@@ -62,8 +62,13 @@ public class RideService {
         return (List<Ride>) rideRepository.findAll();
     }
 
-    public List<Ride> viewRequestsForUser(String name){
-        return rideRepository.findAllByUser(name);
+    public List<Ride> viewRequestsForUser(int token){
+        User user;
+        if(userRepository.existsByToken(token)) {
+            user = userRepository.findAllByToken(token);
+            return rideRepository.findAllByUser(user.getUserName());
+        }
+        return null;
     }
 
     public void completeRide(int id, int token){
@@ -90,8 +95,6 @@ public class RideService {
             ride.setDriver(offer.getDriverName());
             ride.setPrice(offer.getPrice());
             ride.setStatus('A');
-            System.out.println("herehere " + ride.getDriver());
-            System.out.println(offer.getRideId());
             ride.setStatus('A');// A, P
             double discount= ride.getDiscounts();
             ride.setPriceAfterDiscount((1-discount)*ride.getPrice());
@@ -126,7 +129,6 @@ public class RideService {
     public List<Offer> viewOffer(int id, int token) {
         User user;
         if (userRepository.existsByToken(token)) {
-            System.out.println(id);
             return offerRepository.findAllByRideId(id);
         }
         return null;

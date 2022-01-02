@@ -31,7 +31,7 @@ public class RatingService {
         User user;
         if(userRepository.existsByToken(token)) {
             user = userRepository.findAllByToken(token);
-            rating.setUsername(user.getName());
+            rating.setUsername(user.getUserName());
             if(rideRepository.existsByUserAndDriver(rating.getUsername(),rating.getDrivername())) {
                 Driver driver = driverRepository.findAllByUserName(rating.getDrivername());
                 if (rating.getRate() < 1){
@@ -52,7 +52,7 @@ public class RatingService {
         Driver driver;
         if(driverRepository.existsByToken(token)) {
             driver = driverRepository.findAllByToken(token);
-            return ratingRepository.findAllByDrivername(driver.getName());
+            return ratingRepository.findAllByDrivername(driver.getUserName());
         }
         return null;
     }

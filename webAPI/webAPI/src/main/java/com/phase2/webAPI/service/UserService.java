@@ -3,6 +3,7 @@ package com.phase2.webAPI.service;
 import com.phase2.webAPI.entity.Account;
 import com.phase2.webAPI.entity.User;
 import com.phase2.webAPI.repositories.AccountRepository;
+import com.phase2.webAPI.repositories.RideRepository;
 import com.phase2.webAPI.repositories.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -14,6 +15,9 @@ public class UserService {
 
     @Autowired
     private UserRepository userRepository;
+
+    @Autowired
+    private RideRepository rideRepository;
 
     public String createUser(User user) {
         if (user.getName() == null || user.getUserName() == null || user.getPassword() == null || user.getMobileNum() == null)

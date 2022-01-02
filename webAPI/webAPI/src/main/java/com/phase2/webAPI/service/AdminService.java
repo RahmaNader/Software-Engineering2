@@ -1,6 +1,5 @@
 package com.phase2.webAPI.service;
 
-import com.phase2.webAPI.entity.Discounts;
 import com.phase2.webAPI.entity.Driver;
 import com.phase2.webAPI.entity.User;
 import com.phase2.webAPI.repositories.DiscountsRepository;
@@ -39,7 +38,6 @@ public class AdminService {
         return (List<User>) userRepository.findAll();
     }
 
-
     public String suspendDriver(int id) {
         Driver driver = driverRepository.findById(id).get();
         driver.setStatus(0);
@@ -66,23 +64,5 @@ public class AdminService {
         user.setStatus(true);
         userRepository.save(user);
         return ("user " + user.getUserName() + " is activated");
-    }
-
-    public String addAreaDiscount(String area){
-        if(!discountsRepository.existsByArea(area)){
-            Discounts discount = new Discounts(0.1,area);
-            discountsRepository.save(discount);
-            return "Discount added";
-        }
-        return "Already added before";
-    }
-    public String addDateDiscount(String date){
-        LocalDate dateDiscount = LocalDate.parse(date);
-        if(!discountsRepository.existsByTime(dateDiscount)){
-            Discounts discount = new Discounts(0.1,date);
-            discountsRepository.save(discount);
-            return "Discount added";
-        }
-        return "Already added before";
     }
 }

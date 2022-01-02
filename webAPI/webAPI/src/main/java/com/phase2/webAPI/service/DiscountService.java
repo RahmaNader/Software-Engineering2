@@ -102,25 +102,27 @@ public class DiscountService {
         return discount / found.size();
     }
 
-    public Double getAllDiscounts(LocalDate date, String area) {
-        return (this.getDiscountByArea(area) + this.getDiscoundByDate(date));
-    }
-
     public String addDiscountByDate(String date) {
         DateTimeFormatter dtf = DateTimeFormatter.ofPattern("dd-MM-yyyy");
         LocalDate localDate = LocalDate.parse(date,dtf);
-        Discounts discounts = new Discounts();
-        discounts.setDiscounts(0.05);
-        discounts.setTime(localDate);
-        discountsRepository.save(discounts);
-        return "discount by date added";
+        if(!discountsRepository.existsByTime(localDate)) {
+            Discounts discounts = new Discounts();
+            discounts.setDiscounts(0.05);
+            discounts.setTime(localDate);
+            discountsRepository.save(discounts);
+            return "discount by date added";
+        }
+        return "Already added before";
     }
 
     public String addDiscountByArea(String area) {
-        Discounts discounts = new Discounts();
-        discounts.setDiscounts(0.1);
-        discounts.setArea(area);
-        discountsRepository.save(discounts);
-        return "discount by area added";
+        if(!discountsRepository.existsByArea(area)) {
+            Discounts discounts = new Discounts();
+            discounts.setDiscounts(0.1);
+            discounts.setArea(area);
+            discountsRepository.save(discounts);
+            return "discount by area added";
+        }
+        return "Already added before";
     }
 }
