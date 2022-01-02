@@ -10,6 +10,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
+import java.time.Period;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -26,15 +28,22 @@ public class DiscountService {
     @Autowired
     private RideRepository rideRepository;
 
-    public ArrayList<Double> checkDiscounts(Ride ride){
+    public Double checkDiscounts(Ride ride, int token){
         ArrayList<Double> discounts = new ArrayList<>();
-        User user = userRepository.findAllByUserName(ride.getUser());
-        discounts.add(checkFirstRide(user.getUserName()));
-        discounts.add(checkAreaDiscount(ride.getDestination()));
-        discounts.add(checkPassengers(ride));
-        discounts.add(checkPublicHolidays(java.time.LocalDate.now()));
-        discounts.add(checkBirthday(user));
-        return discounts;
+        User user;
+        if(userRepository.existsByToken(token)) {
+            user = userRepository.findAllByToken(token);
+            discounts.add(checkFirstRide(user.getUserName()));
+            discounts.add(checkAreaDiscount(ride.getDestination()));
+            discounts.add(checkPassengers(ride));
+            discounts.add(checkPublicHolidays(java.time.LocalDate.now()));
+            discounts.add(checkBirthday(user));
+        }
+        Double result =0.0;
+        for (int i = 0; i< discounts.size(); i++){
+           result += discounts.get(i);
+        }
+        return result;
     }
 
     public Double checkFirstRide(String user){
@@ -66,7 +75,10 @@ public class DiscountService {
     }
 
     public double checkBirthday(User user){
-        if (user.getBirthDate().equals(java.time.LocalDate.now())){
+        DateTimeFormatter dtf = DateTimeFormatter.ofPattern("dd-MM-yyyy");
+        LocalDate date = LocalDate.parse(user.getBirthDate(),dtf);
+        Period period = Period.between(date, java.time.LocalDate.now());
+        if (period.getDays() == 0 && period.getMonths() ==0){
             return 0.1;
         }
         return 0.0;

@@ -4,10 +4,7 @@ import com.phase2.webAPI.entity.User;
 import com.phase2.webAPI.service.AccountService;
 import com.phase2.webAPI.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
@@ -38,5 +35,9 @@ public class UserController {
     @PostMapping(value = "/loginUser")
     public int login(@RequestBody String [] arr){
          return accountService.loginUser(arr[0],arr[1]);
+    }
+    @PostMapping(value = "/logoutUser")
+    public String logout(@RequestParam int token){
+        return accountService.logOutUser(token);
     }
 }

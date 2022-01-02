@@ -2,6 +2,7 @@ package com.phase2.webAPI.controller;
 
 import com.phase2.webAPI.entity.Offer;
 import com.phase2.webAPI.entity.Ride;
+import com.phase2.webAPI.service.DiscountService;
 import com.phase2.webAPI.service.RideService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
@@ -15,9 +16,13 @@ public class RideController {
     @Autowired
     private RideService riderService;
 
+    @Autowired
+    private DiscountService discountService;
+
     @PostMapping(value = "/requestRide")
     public String registerRide(@RequestBody Ride ride, @RequestParam int token) {
-        return riderService.requestRide(ride, token);
+        Double discount = discountService.checkDiscounts(ride , token);
+        return riderService.requestRide(ride, token , discount);
     }
 
     @GetMapping(value = "/readRides")

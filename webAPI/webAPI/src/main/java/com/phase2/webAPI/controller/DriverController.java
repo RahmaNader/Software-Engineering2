@@ -32,6 +32,11 @@ public class DriverController {
         return accountService.loginDriver(arr[0],arr[1]);
     }
 
+    @PostMapping(value = "/logoutDriver")
+    public String logout(@RequestParam int token){
+        return accountService.logOutDriver(token);
+    }
+
     @PostMapping (value = "/addFavourite")
     public String addFavourite(@RequestBody String location, @RequestParam int token){
         return locationsService.addFavourite(location, token);
@@ -44,5 +49,11 @@ public class DriverController {
     @PostMapping(value = "/displayRides")
     public Set<Ride> displayRides(@RequestParam int token){
         return driverService.displayRides(token);
+    }
+
+    @PostMapping(value = "/changeCurrentLocation")
+    public String changeCurrentLocation(@RequestBody String location, @RequestParam int token){
+
+        return "Current Location changed";
     }
 }

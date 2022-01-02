@@ -16,7 +16,7 @@ public class User extends Person {
 
     private float balance;
 
-    private LocalDate birthDate;
+    private String birthDate;
 
     public User() {
         token = -1;
@@ -61,11 +61,11 @@ public class User extends Person {
     }
 
     @Column
-    public LocalDate getBirthDate() {
+    public String getBirthDate() {
         return birthDate;
     }
 
-    public void setBirthDate(LocalDate birthDate) {
+    public void setBirthDate(String birthDate) {
         this.birthDate = birthDate;
     }
 }

@@ -16,6 +16,7 @@ import java.util.List;
 public class AccountService {
     @Autowired
     AccountRepository accountRepository;
+
     @Autowired
     UserRepository userRepository;
 
@@ -24,13 +25,15 @@ public class AccountService {
 
         private List<User> users = new ArrayList<>();
         private List<Driver> drivers = new ArrayList<>();
+        private int usersCount =1;
+        private int driversCount =1;
 
     public AccountService() {
     }
 
     public String logIn(Account account){
-        //            Account loggedIn = new Account(username,0);
-//            accountRepository.save(loggedIn);
+        /*Account loggedIn = new Account(username,0);
+        accountRepository.save(loggedIn);*/
         accountRepository.save(account);
         return (account.getName()+" logged in");
     }
@@ -40,10 +43,20 @@ public class AccountService {
         if (userRepository.existsByUserNameAndPassword(username,password)){
             User user = userRepository.findAllByUserName(username);
             if (user.getStatus()) {
-                users.add(user);
-                user.setToken(users.size());
-                userRepository.save(user);
-                return users.size();
+                boolean flag = false;
+                for (int i=0; i <users.size(); i++) {
+                    if (users.get(i).getUserName().equals(user.getUserName())) {
+                        flag = true;
+                        return users.get(i).getToken();
+                    }
+                }
+                if (!flag){
+                    users.add(user);
+                    user.setToken(users.size());
+                    userRepository.save(user);
+                    return users.size();
+                }else
+                    return -1;
             }
         }
         return -1;
@@ -53,33 +66,43 @@ public class AccountService {
         if (driverRepository.existsByUserNameAndPassword(username, password)) {
             Driver driver = driverRepository.findAllByUserName(username);
             if(driver.getStatus() == 1) {
+                boolean flag = false;
+                for (int i=0; i <users.size(); i++) {
+                    if (drivers.get(i).getUserName().equals(driver.getUserName())) {
+                        flag = true;
+                        return drivers.get(i).getToken();
+                    }
+                }
+                if (!flag){
                 drivers.add(driver);
                 driver.setToken(drivers.size());
                 driverRepository.save(driver);
                 return drivers.size();
-            }else{
-                return -1;
+                }else
+                    return -1;
             }
         }
         return -1;
     }
 
     public String logOutUser(int token){
-        if(users.get(token-1) != null){
-            User user = users.remove(token-1);
+        if(users.get(token-usersCount) != null){
+            User user = users.remove(token-usersCount);
             user.setToken(-1);
             userRepository.save(user);
-            return (user.getUserName() + "logged out");
+            usersCount++;
+            return (user.getUserName() + " logged out");
         }
         return "error";
     }
 
     public String logOutDriver(int token){
-        if(drivers.get(token-1) != null){
-            Driver driver = drivers.remove(token-1);
+        if(drivers.get(token-driversCount) != null){
+            Driver driver = drivers.remove(token-driversCount);
             driver.setToken(-1);
             driverRepository.save(driver);
-            return (driver.getUserName() + "logged out");
+            driversCount++;
+            return (driver.getUserName() + " logged out");
         }
         return "error";
     }

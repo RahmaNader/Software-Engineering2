@@ -30,8 +30,7 @@ public class Ride {
 
     private double priceAfterDiscount = -1;
 
-    @ElementCollection
-    private ArrayList<Double> discounts;
+    private Double discounts;
 
     public Ride() {
         this.status = 'P';
@@ -127,12 +126,12 @@ public class Ride {
         this.date = date;
     }
 
-    public ArrayList<Double> getArrayList() {
+    public Double getDiscounts() {
         return discounts;
     }
 
-    public void setArrayList(Double x) {
-        this.discounts.add(x);
+    public void setDiscounts(Double discounts) {
+        this.discounts = discounts;
     }
 
     public int getPassengersNum() {
@@ -142,5 +141,7 @@ public class Ride {
     public void setPassengersNum(int passengersNum) {
         this.passengersNum = passengersNum;
     }
+
+
 }
 

@@ -39,10 +39,13 @@ public class DriverService {
     }
 
 
-    public void location(String name, String location){
-        Driver driver = driverRepository.findAllByUserName(name);
-        driver.setLocation(location);
-        driverRepository.save(driver);
+    public void location(String location, int token){
+        Driver driver;
+        if(driverRepository.existsByToken(token)) {
+            driver = driverRepository.findAllByToken(token);
+            driver.setLocation(location);
+            driverRepository.save(driver);
+        }
     }
 
     public Set<Ride> displayRides(int token){

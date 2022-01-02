@@ -34,12 +34,13 @@ public class RideService {
     private LocationsRepository locationsRepository;
 
 
-    public String requestRide(Ride ride, int token) {
+    public String requestRide(Ride ride, int token, Double discount) {
         User user;
         if(userRepository.existsByToken(token)) {
             user = userRepository.findAllByToken(token);
             ride.setStatus('P');
             ride.setUser(user.getUserName());
+            ride.setDiscounts(discount);
             rideRepository.save(ride);
             return "ride created";
         }
@@ -89,6 +90,8 @@ public class RideService {
             System.out.println("herehere " + ride.getDriver());
             System.out.println(offer.getRideId());
             ride.setStatus('A');// A, P
+            double discount= ride.getDiscounts();
+            ride.setPriceAfterDiscount((1-discount)*ride.getPrice());
             rideRepository.save(ride);
             Driver driver = driverRepository.findAllByUserName(ride.getDriver());
             driver.setInRide(1);
@@ -140,6 +143,4 @@ public class RideService {
         }
         return "wrong id number or token number";
     }
-
-
 }
