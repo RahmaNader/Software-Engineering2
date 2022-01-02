@@ -8,4 +8,5 @@ import java.util.List;
 public interface LocationsRepository extends JpaRepository<Locations, Integer> {
     List<Locations> findAllByUser(String user);
     List<Locations> findAllByUserAndLocation(String user, String location);
+    boolean existsByUserAndLocation(String user , String location);
 }

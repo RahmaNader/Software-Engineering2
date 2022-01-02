@@ -27,11 +27,6 @@ public class UserController {
         return userService.createUser(user);
     }
 
-    @GetMapping(value = "/readUsers")
-    public List<User> getUsers() {
-        return userService.allUsers();
-    }
-
     @PostMapping(value = "/loginUser")
     public int login(@RequestBody String [] arr){
          return accountService.loginUser(arr[0],arr[1]);

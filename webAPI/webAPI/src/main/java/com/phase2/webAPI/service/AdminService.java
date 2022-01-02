@@ -35,6 +35,9 @@ public class AdminService {
     public List<Driver> allDrivers() {
         return (List<Driver>) driverRepository.findAll();
     }
+    public List<User> allUsers() {
+        return (List<User>) userRepository.findAll();
+    }
 
 
     public String suspendDriver(int id) {

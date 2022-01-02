@@ -26,8 +26,5 @@ public class UserService {
         return "UserName already exists";
     }
 
-    public List<User> allUsers() {
-        return (List<User>) userRepository.findAll();
-    }
 
 }

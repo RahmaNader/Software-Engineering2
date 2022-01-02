@@ -39,7 +39,7 @@ public class DriverService {
     }
 
 
-    public void location(String location, int token){
+    public void currentLocation(String location, int token){
         Driver driver;
         if(driverRepository.existsByToken(token)) {
             driver = driverRepository.findAllByToken(token);
@@ -53,13 +53,19 @@ public class DriverService {
         Set<Ride> rides = new HashSet<>() ;
         if(driverRepository.existsByToken(token)) {
             driver = driverRepository.findAllByToken(token);
-            List<Locations> locations = locationsRepository.findAllByUser(driver.getUserName());
-            for (Locations location : locations){
-                List<Ride> ride = rideRepository.findAllBySource(location.getLocation());
-                rides.addAll(ride);
+            if (driver.getInRide() == 0) {
+                List<Locations> locations = locationsRepository.findAllByUser(driver.getUserName());
+                for (Locations location : locations) {
+                    List<Ride> ride = rideRepository.findAllBySource(location.getLocation());
+                    rides.addAll(ride);
+                }
+            }
+            for (int i=0; i < rides.size(); i++){
+                rides.removeIf(ride -> ride.getStatus() == 'E');
             }
             return rides;
         }
         return null;
     }
+
 }

@@ -67,16 +67,19 @@ public class RideService {
     }
 
     public void completeRide(int id, int token){
-        Ride ride = rideRepository.findAllById(id);
-        ride.setStatus('E');
-        Driver driver = driverRepository.findAllByUserName(ride.getDriver());
-        driver.setInRide(0);
-        driver.setLocation(ride.getDestination());
-        EventName eventName = EventName.capArrivesDest;
-        Event event = new Event(ride.getId(),ride.getUser(),ride.getDriver(),ride.getPrice(), LocalDateTime.now().atZone(ZoneId.systemDefault()).toLocalDateTime(),eventName);
-        eventRepository.save(event);
-        driverRepository.save(driver);
-        rideRepository.save(ride);
+        Driver driver;
+        if(driverRepository.existsByToken(token)) {
+            driver = driverRepository.findAllByToken(token);
+            Ride ride = rideRepository.findAllById(id);
+            ride.setStatus('E');
+            driver.setInRide(0);
+            driver.setLocation(ride.getDestination());
+            EventName eventName = EventName.capArrivesDest;
+            Event event = new Event(ride.getId(), ride.getUser(), ride.getDriver(), ride.getPrice(), LocalDateTime.now().atZone(ZoneId.systemDefault()).toLocalDateTime(), eventName);
+            eventRepository.save(event);
+            driverRepository.save(driver);
+            rideRepository.save(ride);
+        }
     }
 
     public void acceptRequest(int id, int token) {
@@ -108,6 +111,7 @@ public class RideService {
         if(driverRepository.existsByToken(token)) {
             driver = driverRepository.findAllByToken(token);
             if (driver.getInRide()==0 && (rideRepository.existsById(offer.getRideId()))) {
+                offer.setDriverName(driver.getUserName());
                 offerRepository.save(offer);
                 String username = rideRepository.findAllById(offer.getRideId()).getUser();
                 EventName eventName = EventName.captainOffer;

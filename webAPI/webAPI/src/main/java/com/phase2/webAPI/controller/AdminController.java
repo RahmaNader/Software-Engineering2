@@ -2,9 +2,9 @@ package com.phase2.webAPI.controller;
 
 import com.phase2.webAPI.entity.Driver;
 import com.phase2.webAPI.entity.Event;
-import com.phase2.webAPI.service.AdminService;
-import com.phase2.webAPI.service.DriverService;
-import com.phase2.webAPI.service.EventService;
+import com.phase2.webAPI.entity.User;
+import com.phase2.webAPI.repositories.UserRepository;
+import com.phase2.webAPI.service.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
@@ -20,7 +20,7 @@ public class AdminController {
     EventService eventService;
 
     @Autowired
-    private DriverService driverService;
+    DiscountService discountService;
 
     @GetMapping(value = "/admin/listAllDriverRequests")
     public List<Driver> listAllDriverRequests() {
@@ -30,6 +30,11 @@ public class AdminController {
     @GetMapping(value = "/readDrivers")
     public List<Driver> getDrivers() {
         return adminService.allDrivers();
+    }
+
+    @GetMapping(value = "/readUsers")
+    public List<User> getUsers() {
+        return adminService.allUsers();
     }
 
     @PutMapping(value = "/admin/suspendDriver")
@@ -57,10 +62,14 @@ public class AdminController {
         return eventService.displayEvent();
     }
 
-    @PostMapping(value = "/admin/addDiscount")
-    public String addDiscount(@RequestBody String area){
+    @PostMapping(value = "/admin/addAreaDiscount")
+    public String addAreaDiscount(@RequestBody String area){
+        return discountService.addDiscountByArea(area);
+    }
 
-        return "Discount added";
+    @PostMapping(value = "/admin/addDateDiscount")
+    public String addDateDiscount(@RequestBody String date){
+        return discountService.addDiscountByDate(date);
     }
 
 }

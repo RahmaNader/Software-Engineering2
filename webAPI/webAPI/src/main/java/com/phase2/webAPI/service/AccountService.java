@@ -52,6 +52,13 @@ public class AccountService {
                 }
                 if (!flag){
                     users.add(user);
+                    if (users.size() == 1){
+                        List<User> temp = userRepository.findAll();
+                        for (int i =0; i<temp.size(); i++){
+                            temp.get(i).setToken(-1);
+                        }
+                        userRepository.saveAll(temp);
+                    }
                     user.setToken(users.size());
                     userRepository.save(user);
                     return users.size();
@@ -67,7 +74,7 @@ public class AccountService {
             Driver driver = driverRepository.findAllByUserName(username);
             if(driver.getStatus() == 1) {
                 boolean flag = false;
-                for (int i=0; i <users.size(); i++) {
+                for (int i=0; i <drivers.size(); i++) {
                     if (drivers.get(i).getUserName().equals(driver.getUserName())) {
                         flag = true;
                         return drivers.get(i).getToken();
@@ -75,6 +82,13 @@ public class AccountService {
                 }
                 if (!flag){
                 drivers.add(driver);
+                if (drivers.size() == 1){
+                    List<Driver> temp = driverRepository.findAll();
+                    for (int i =0; i<temp.size(); i++){
+                        temp.get(i).setToken(-1);
+                    }
+                    driverRepository.saveAll(temp);
+                }
                 driver.setToken(drivers.size());
                 driverRepository.save(driver);
                 return drivers.size();

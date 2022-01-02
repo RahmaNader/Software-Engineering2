@@ -106,13 +106,21 @@ public class DiscountService {
         return (this.getDiscountByArea(area) + this.getDiscoundByDate(date));
     }
 
-    public String addDiscountByDate(Discounts discounts) {
+    public String addDiscountByDate(String date) {
+        DateTimeFormatter dtf = DateTimeFormatter.ofPattern("dd-MM-yyyy");
+        LocalDate localDate = LocalDate.parse(date,dtf);
+        Discounts discounts = new Discounts();
+        discounts.setDiscounts(0.05);
+        discounts.setTime(localDate);
         discountsRepository.save(discounts);
         return "discount by date added";
     }
 
-    public String addDiscountByArea(Discounts discounts) {
+    public String addDiscountByArea(String area) {
+        Discounts discounts = new Discounts();
+        discounts.setDiscounts(0.1);
+        discounts.setArea(area);
         discountsRepository.save(discounts);
-        return "discount by time added";
+        return "discount by area added";
     }
 }

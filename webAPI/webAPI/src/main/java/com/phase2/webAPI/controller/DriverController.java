@@ -53,7 +53,7 @@ public class DriverController {
 
     @PostMapping(value = "/changeCurrentLocation")
     public String changeCurrentLocation(@RequestBody String location, @RequestParam int token){
-
+        driverService.currentLocation(location,token);
         return "Current Location changed";
     }
 }
