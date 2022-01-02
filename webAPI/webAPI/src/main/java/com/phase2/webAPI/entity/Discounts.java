@@ -1,7 +1,7 @@
 package com.phase2.webAPI.entity;
 
 import javax.persistence.*;
-import java.util.Date;
+import java.time.LocalDate;
 
 @Entity
 public class Discounts {
@@ -12,7 +12,7 @@ public class Discounts {
 
     double discounts;
     String area;
-    Date time;
+    LocalDate time;
 
     public Discounts() {
     }
@@ -22,7 +22,7 @@ public class Discounts {
         this.area = area;
     }
 
-    public Discounts(double discounts, Date time) {
+    public Discounts(double discounts, LocalDate time) {
         this.discounts = discounts;
         this.time = time;
     }
@@ -46,11 +46,11 @@ public class Discounts {
     }
 
     @Column
-    public Date getTime() {
+    public LocalDate getTime() {
         return time;
     }
 
-    public void setTime(Date time) {
+    public void setTime(LocalDate time) {
         this.time = time;
     }
 }

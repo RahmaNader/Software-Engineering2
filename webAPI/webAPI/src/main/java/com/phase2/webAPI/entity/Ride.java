@@ -1,6 +1,8 @@
 package com.phase2.webAPI.entity;
 
 import javax.persistence.*;
+import java.time.LocalDate;
+import java.util.ArrayList;
 
 @Entity
 public class Ride {
@@ -17,14 +19,25 @@ public class Ride {
 
     private String driver;
 
+    private LocalDate date;
+
+    private int passengersNum;
+
     //A = accepted, P = pending, E = ended
     private char status;
 
     private double price;
 
+    private double priceAfterDiscount = -1;
+
+    @ElementCollection
+    private ArrayList<Double> discounts;
+
     public Ride() {
         this.status = 'P';
         this.driver = "null";
+        this.passengersNum = 1;
+        date = LocalDate.now();
     }
 
     public Ride(String source, String destination, String user) {
@@ -32,7 +45,10 @@ public class Ride {
         this.destination = destination;
         this.user = user;
         this.status = 'P';
+        date = LocalDate.now();
+        passengersNum = 1;
         this.driver = "null";
+        date = LocalDate.now();
     }
 
     @Column
@@ -92,6 +108,39 @@ public class Ride {
     @Column
     public int getId() {
         return id;
+    }
+
+    @Column
+    public double getPriceAfterDiscount() {
+        return priceAfterDiscount;
+    }
+
+    public void setPriceAfterDiscount(double priceAfterDiscount) {
+        this.priceAfterDiscount = priceAfterDiscount;
+    }
+
+    public LocalDate getDate() {
+        return date;
+    }
+
+    public void setDate(LocalDate date) {
+        this.date = date;
+    }
+
+    public ArrayList<Double> getArrayList() {
+        return discounts;
+    }
+
+    public void setArrayList(Double x) {
+        this.discounts.add(x);
+    }
+
+    public int getPassengersNum() {
+        return passengersNum;
+    }
+
+    public void setPassengersNum(int passengersNum) {
+        this.passengersNum = passengersNum;
     }
 }
 

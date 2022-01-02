@@ -3,12 +3,10 @@ package com.phase2.webAPI.controller;
 import com.phase2.webAPI.entity.Driver;
 import com.phase2.webAPI.entity.Event;
 import com.phase2.webAPI.service.AdminService;
+import com.phase2.webAPI.service.DriverService;
 import com.phase2.webAPI.service.EventService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
@@ -21,9 +19,17 @@ public class AdminController {
     @Autowired
     EventService eventService;
 
+    @Autowired
+    private DriverService driverService;
+
     @GetMapping(value = "/admin/listAllDriverRequests")
     public List<Driver> listAllDriverRequests() {
         return adminService.listAllDriverRequests();
+    }
+
+    @GetMapping(value = "/readDrivers")
+    public List<Driver> getDrivers() {
+        return adminService.allDrivers();
     }
 
     @PutMapping(value = "/admin/suspendDriver")
@@ -49,6 +55,12 @@ public class AdminController {
     @GetMapping(value = "/admin/events")
     public List<Event> displayEvent (){
         return eventService.displayEvent();
+    }
+
+    @PostMapping(value = "/admin/addDiscount")
+    public String addDiscount(@RequestBody String area){
+
+        return "Discount added";
     }
 
 }

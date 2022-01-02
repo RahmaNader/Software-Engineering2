@@ -1,12 +1,15 @@
 package com.phase2.webAPI.service;
 
+import com.phase2.webAPI.entity.Discounts;
 import com.phase2.webAPI.entity.Driver;
 import com.phase2.webAPI.entity.User;
+import com.phase2.webAPI.repositories.DiscountsRepository;
 import com.phase2.webAPI.repositories.DriverRepository;
 import com.phase2.webAPI.repositories.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -17,6 +20,8 @@ public class AdminService {
     DriverRepository driverRepository;
     @Autowired
     UserRepository userRepository;
+    @Autowired
+    DiscountsRepository discountsRepository;
 
     public List<Driver> listAllDriverRequests() {
         List<Driver> all = driverRepository.findAll();
@@ -26,6 +31,9 @@ public class AdminService {
             if (driver.getStatus()==0) ret.add(driver);
         }
         return ret;
+    }
+    public List<Driver> allDrivers() {
+        return (List<Driver>) driverRepository.findAll();
     }
 
 
@@ -38,7 +46,7 @@ public class AdminService {
 
     public String activateDriver(int id) {
         Driver driver = driverRepository.findById(id).get();
-        driver.setStatus(0);
+        driver.setStatus(1);
         driverRepository.save(driver);
         return ("driver " + driver.getUserName() + " is activated");
     }
@@ -55,5 +63,23 @@ public class AdminService {
         user.setStatus(true);
         userRepository.save(user);
         return ("user " + user.getUserName() + " is activated");
+    }
+
+    public String addAreaDiscount(String area){
+        if(!discountsRepository.existsByArea(area)){
+            Discounts discount = new Discounts(0.1,area);
+            discountsRepository.save(discount);
+            return "Discount added";
+        }
+        return "Already added before";
+    }
+    public String addDateDiscount(String date){
+        LocalDate dateDiscount = LocalDate.parse(date);
+        if(!discountsRepository.existsByTime(dateDiscount)){
+            Discounts discount = new Discounts(0.1,date);
+            discountsRepository.save(discount);
+            return "Discount added";
+        }
+        return "Already added before";
     }
 }

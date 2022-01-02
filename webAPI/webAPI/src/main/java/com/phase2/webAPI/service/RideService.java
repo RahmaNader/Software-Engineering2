@@ -141,18 +141,5 @@ public class RideService {
         return "wrong id number or token number";
     }
 
-    public Set<Ride> displayRides(int token){
-        Driver driver;
-        Set<Ride> rides = new HashSet<>() ;
-        if(driverRepository.existsByToken(token)) {
-            driver = driverRepository.findAllByToken(token);
-            List<Locations> locations = locationsRepository.findAllByUser(driver.getUserName());
-            for (Locations location : locations){
-                List<Ride> ride = rideRepository.findAllBySource(location.getLocation());
-                rides.addAll(ride);
-            }
-            return rides;
-        }
-        return null;
-    }
+
 }

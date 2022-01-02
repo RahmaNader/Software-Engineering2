@@ -2,6 +2,7 @@ package com.phase2.webAPI.controller;
 
 import com.phase2.webAPI.entity.Driver;
 import com.phase2.webAPI.entity.Locations;
+import com.phase2.webAPI.entity.Ride;
 import com.phase2.webAPI.service.DriverService;
 import com.phase2.webAPI.service.AccountService;
 import com.phase2.webAPI.service.LocationsService;
@@ -9,6 +10,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Set;
 
 @RestController
 public class DriverController {
@@ -25,11 +27,6 @@ public class DriverController {
         return driverService.createDriver(driver);
     }
 
-    @GetMapping(value = "/readDrivers")
-    public List<Driver> getDrivers() {
-        return driverService.allDrivers();
-    }
-
     @PostMapping(value = "/loginDriver")
     public int login(@RequestBody String [] arr){
         return accountService.loginDriver(arr[0],arr[1]);
@@ -43,5 +40,9 @@ public class DriverController {
     @PostMapping (value = "/displayFavourite")
     public List<Locations> displayFavourite(@RequestParam int token){
         return locationsService.displayFavourite(token);
+    }
+    @PostMapping(value = "/displayRides")
+    public Set<Ride> displayRides(@RequestParam int token){
+        return driverService.displayRides(token);
     }
 }

@@ -1,6 +1,7 @@
 package com.phase2.webAPI.entity;
 
 import javax.persistence.*;
+import java.time.LocalDate;
 
 @Entity
 public class User extends Person {
@@ -15,6 +16,7 @@ public class User extends Person {
 
     private float balance;
 
+    private LocalDate birthDate;
 
     public User() {
         token = -1;
@@ -41,7 +43,7 @@ public class User extends Person {
     }
 
     @Column
-    public boolean isStatus() {
+    public boolean getStatus() {
         return status;
     }
 
@@ -56,5 +58,14 @@ public class User extends Person {
 
     public void setToken(int token) {
         this.token = token;
+    }
+
+    @Column
+    public LocalDate getBirthDate() {
+        return birthDate;
+    }
+
+    public void setBirthDate(LocalDate birthDate) {
+        this.birthDate = birthDate;
     }
 }

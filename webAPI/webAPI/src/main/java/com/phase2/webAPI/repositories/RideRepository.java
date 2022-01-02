@@ -10,4 +10,5 @@ public interface RideRepository extends JpaRepository<Ride, Integer> {
     Ride findAllById(int id);
     List<Ride> findAllBySource(String source);
     boolean existsByUserAndDriver(String user, String driver);
+    boolean existsByUser(String user);
 }

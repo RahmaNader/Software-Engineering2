@@ -23,7 +23,7 @@ public class LocationsService {
         Driver driver;
         if(driverRepository.existsByToken(token)) {
             driver = driverRepository.findAllByToken(token);
-            Locations locations = new Locations(driver.getUserName(),location);
+            Locations locations = new Locations(location, driver.getUserName());
             locationsRepository.save(locations);
             return "Location created";
         }

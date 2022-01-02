@@ -16,8 +16,8 @@ public class RideController {
     private RideService riderService;
 
     @PostMapping(value = "/requestRide")
-    public String registerRide(@RequestBody Ride rider, @RequestParam int token) {
-        return riderService.requestRide(rider, token);
+    public String registerRide(@RequestBody Ride ride, @RequestParam int token) {
+        return riderService.requestRide(ride, token);
     }
 
     @GetMapping(value = "/readRides")
@@ -53,10 +53,7 @@ public class RideController {
         return riderService.driverArrivedToSource(id, token);
     }
 
-    @PostMapping(value = "/displayRides")
-    public Set<Ride> displayRides(@RequestParam int token){
-        return riderService.displayRides(token);
-    }
+
 
 
 }

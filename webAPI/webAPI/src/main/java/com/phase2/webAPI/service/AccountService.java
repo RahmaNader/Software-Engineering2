@@ -39,10 +39,12 @@ public class AccountService {
     public  int loginUser(String username, String password){
         if (userRepository.existsByUserNameAndPassword(username,password)){
             User user = userRepository.findAllByUserName(username);
-            users.add(user);
-            user.setToken(users.size());
-            userRepository.save(user);
-            return users.size();
+            if (user.getStatus()) {
+                users.add(user);
+                user.setToken(users.size());
+                userRepository.save(user);
+                return users.size();
+            }
         }
         return -1;
     }
@@ -50,10 +52,14 @@ public class AccountService {
     public  int loginDriver(String username, String password) {
         if (driverRepository.existsByUserNameAndPassword(username, password)) {
             Driver driver = driverRepository.findAllByUserName(username);
-            drivers.add(driver);
-            driver.setToken(drivers.size());
-            driverRepository.save(driver);
-            return drivers.size();
+            if(driver.getStatus() == 1) {
+                drivers.add(driver);
+                driver.setToken(drivers.size());
+                driverRepository.save(driver);
+                return drivers.size();
+            }else{
+                return -1;
+            }
         }
         return -1;
     }

@@ -34,6 +34,11 @@ public class RatingService {
             rating.setUsername(user.getName());
             if(rideRepository.existsByUserAndDriver(rating.getUsername(),rating.getDrivername())) {
                 Driver driver = driverRepository.findAllByUserName(rating.getDrivername());
+                if (rating.getRate() < 1){
+                    rating.setRate(1);
+                }else if(rating.getRate() > 5){
+                    rating.setRate(5);
+                }
                 ratingRepository.save(rating);
                 driver.setAvgRating(this.calculateAvg(rating.getDrivername()));
                 driverRepository.save(driver);
